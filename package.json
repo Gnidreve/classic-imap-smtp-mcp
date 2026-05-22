@@ -24,7 +24,7 @@
     "url": "git+https://github.com/Gnidreve/classic-imap-smtp-mcp.git"
   },
   "bin": {
-    "classic-imap-smtp-mcp": "dist/bin/main.js"
+    "classic-imap-smtp-mcp": "dist/main.js"
   },
   "files": [
     "dist",
