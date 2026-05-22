@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "A complete classic IMAP/SMTP MCP server. Everything a good mail client does — no OAuth, no cloud lock-in, no scope creep.",
   "type": "module",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "keywords": [
     "mcp",
     "model-context-protocol",
@@ -15,13 +15,13 @@
     "claude",
     "ai"
   ],
-  "homepage": "https://github.com/<OWNER>/classic-imap-smtp-mcp#readme",
+  "homepage": "https://github.com/Gnidreve/classic-imap-smtp-mcp#readme",
   "bugs": {
-    "url": "https://github.com/<OWNER>/classic-imap-smtp-mcp/issues"
+    "url": "https://github.com/Gnidreve/classic-imap-smtp-mcp/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/<OWNER>/classic-imap-smtp-mcp.git"
+    "url": "git+https://github.com/Gnidreve/classic-imap-smtp-mcp.git"
   },
   "bin": {
     "classic-imap-smtp-mcp": "dist/bin/main.js"

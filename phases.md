@@ -10,8 +10,9 @@ Dieses Dokument verfolgt den Fortschritt des Projekts. Es ist **nicht** der Eins
 | 1 — Fragerunde + Definition aller Folgephasen | ✅ erledigt | [`phase-1-fragerunde.md`](phase-1-fragerunde.md) |
 | 2 — Projektstruktur | ✅ Skelett angelegt | [`phase-2-projektstruktur.md`](phase-2-projektstruktur.md) |
 | 3 — Tool-Implementierung | ✅ implementiert (53 Dateien, 36 Tools, Connections, Libs) | `phase-3-implementierung.md` (entsteht bei Bedarf) |
-| 4 — Validierung | ⬜ offen | `phase-4-validierung.md` (entsteht nach Phase 3) |
-| 5 — Distribution & Reichweite | ⬜ offen | `phase-5-distribution.md` (entsteht nach Phase 4) |
+| Lizenz (hartes Gate) | ✅ **MIT** — `LICENSE`-File erstellt, README/package.json/phases aktualisiert | [`LICENSE`](LICENSE) |
+| 4 — Validierung | ⬜ offen (Sensai testet lokal) | `phase-4-validierung.md` (entsteht nach Phase 3) |
+| 5 — Distribution & Reichweite | ⬜ bereit (License gate ✅ MIT) | `phase-5-distribution.md` (entsteht nach Phase 4) |
 
 ## Phasen-Logik
 
@@ -29,7 +30,7 @@ Diese Punkte sind **nicht mehr verhandelbar** und gelten als Vertrag mit allen f
 - Transport: **stdio only** (kein HTTP/SSE)
 - Distribution: **npx-only in v1** (Docker v2.x)
 - Runtime: **Node ≥ 20**, **TypeScript**
-- Lizenz: **TBD** — Festlegung vor v1.0-Release (hartes Gate, siehe unten)
+- Lizenz: **MIT** (entschieden, hard gate cleared ✅)
 
 **Stack**
 - IMAP: `imapflow` · SMTP: `nodemailer` · MIME: `mailparser`
@@ -63,8 +64,6 @@ Diese Punkte sind **nicht mehr verhandelbar** und gelten als Vertrag mit allen f
 
 ## ⚠️ Hartes Gate vor Phase 5
 
-**Ohne gewählte Lizenz ist der Code rechtlich "all rights reserved".** Das betrifft nicht nur npm-Publish, sondern auch die öffentliche GitHub-Veröffentlichung und jeden Reddit/HN-Post in Phase 5 — niemand dürfte den Code legal nutzen, forken oder beitragen. Daher:
+**Ohne gewählte Lizenz ist der Code rechtlich "all rights reserved".** Das betrifft nicht nur npm-Publish, sondern auch die öffentliche GitHub-Veröffentlichung und jeden Reddit/HN-Post in Phase 5 — niemand dürfte den Code legal nutzen, forken oder beitragen.
 
-- **Phase 5 darf nicht beginnen, bevor die Lizenz (`B2`) final entschieden und ein `LICENSE`-File im Repo ist.**
-- Bis dahin: privates Repo oder klarer "License pending, do not redistribute"-Hinweis im README (steht dort bereits).
-- Empfehlung bleibt MIT, solange kein Grund für Apache-2.0 auftaucht.
+✅ **Gate passiert.** Lizenz ist **MIT** (siehe [`LICENSE`](LICENSE)). Phase 5 kann starten.

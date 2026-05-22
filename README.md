@@ -4,7 +4,7 @@
 
 [![npm version](https://img.shields.io/npm/v/classic-imap-smtp-mcp.svg?style=flat-square)](https://www.npmjs.com/package/classic-imap-smtp-mcp)
 [![npm downloads](https://img.shields.io/npm/dm/classic-imap-smtp-mcp.svg?style=flat-square)](https://www.npmjs.com/package/classic-imap-smtp-mcp)
-[![CI](https://img.shields.io/github/actions/workflow/status/<OWNER>/classic-imap-smtp-mcp/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/<OWNER>/classic-imap-smtp-mcp/actions)
+[![CI](https://img.shields.io/github/actions/workflow/status/Gnidreve/classic-imap-smtp-mcp/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Gnidreve/classic-imap-smtp-mcp/actions)
 
 ---
 
@@ -38,7 +38,7 @@ Vergleich der relevanten IMAP/SMTP-MCPs am Markt:
 | Multi-Account | ✅ | ✅ | ❌ | ✅ | ❌ |
 | CLI-Feature-Toggles | ✅ | ❌ | ❌ | ❌ | ❌ |
 | `npx`/`uvx` Distribution | ✅ | ✅ | ⚠️ | ✅ | ✅ |
-| Permissive Lizenz | TBD | ✅ | ⚠️ | ❌ LGPL | ✅ |
+| Permissive Lizenz | MIT | ✅ | ⚠️ | ❌ LGPL | ✅ |
 | Scope nur Mail | ✅ | ✅ | ✅ | ❌ | ✅ |
 
 ## Installation
@@ -338,4 +338,4 @@ Wenn du an classic-imap-smtp-mcp **mit** einem AI-Assistenten arbeitest, lade `A
 
 ## Lizenz
 
-**TBD** — die Lizenz wird vor dem v1.0-Release final festgelegt. Bis dahin gilt: Code-Inspektion und privates Experimentieren sind okay, aber kein Production-Use oder Weiterverbreitung.
+MIT License — siehe [`LICENSE`](LICENSE).
