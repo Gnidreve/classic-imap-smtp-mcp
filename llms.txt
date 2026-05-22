@@ -1,0 +1,262 @@
+# classic-imap-smtp-mcp — LLM Reference
+
+> This file is the machine-optimized counterpart to `README.md`. It exists so a consuming LLM (e.g. an AI assistant helping a user install classic-imap-smtp-mcp, or another agent that will call classic-imap-smtp-mcp's tools) can ingest the essential information in one pass.
+>
+> Human readers should prefer `README.md`. Coding agents working on the codebase should use `AGENTS.md`.
+
+---
+
+## What classic-imap-smtp-mcp is
+
+A local-only MCP (Model Context Protocol) server that exposes a full mail client's worth of IMAP and SMTP operations as tools. Provider-agnostic. License TBD (set before v1.0 release). No telemetry. No cloud component.
+
+## What classic-imap-smtp-mcp is NOT
+
+- **Not OAuth-based.** This MCP implements classic IMAP/SMTP with password-based authentication (App-Passwords supported). It does not implement OAuth2/XOAUTH2. For Microsoft 365 OAuth-only setups or Gmail-OAuth-only setups, combine this MCP with a provider-specific MCP.
+- Not a calendar/scheduling system
+- Not an AI triage system (no preset prompts, no auto-labeling, no inbox-zero heuristics)
+- Not a notification system (no desktop alerts, no webhooks, no push to Slack/Discord)
+- Not a mail server (it does not host mail; it talks to existing IMAP/SMTP servers)
+- Not a future-send scheduler
+
+If a user asks for any of the above, do not pretend classic-imap-smtp-mcp does it. Suggest combining classic-imap-smtp-mcp with another MCP that specializes in that domain.
+
+---
+
+## Setup prompt (paste this into a conversation with a user)
+
+If a user asks you to "install classic-imap-smtp-mcp" or "set up mail in my Claude/Cursor/Windsurf/VS Code", run through the following checklist with them:
+
+1. **Determine the client** they use: Claude Desktop, Claude Code, Cursor, Windsurf, or VS Code (Copilot/MCP).
+2. **Collect credentials.** Required: email address, password (strongly prefer App-Password where the provider supports it — Gmail, Outlook, iCloud, Yahoo all do).
+3. **Detect the provider.** If the email domain is one of the auto-detected providers (see "Auto-detected providers" below), the user only needs to supply `CLASSIC_IMAP_SMTP_USER` and `CLASSIC_IMAP_SMTP_PASS`. Otherwise also collect IMAP host/port and SMTP host/port.
+4. **Choose a safety level.** Default is full access. If the user expresses any safety concern ("I don't want it to delete things"), recommend `--safe` (no deletes) or `--readonly` (read-only).
+5. **Write the client config** using the appropriate JSON snippet (see "Client snippets" below).
+6. **Restart the client** so it picks up the new MCP server.
+7. **Verify** by asking the user to prompt "list my email folders" — this should trigger `imap_list_mailboxes`.
+
+If the user wants multiple accounts, instruct them to run `npx classic-imap-smtp-mcp init` to scaffold the TOML config and then edit it. The env-var path is single-account only.
+
+---
+
+## Auto-detected providers
+
+For these email domains, only `CLASSIC_IMAP_SMTP_USER` + `CLASSIC_IMAP_SMTP_PASS` are required. Host/port are filled in automatically:
+
+- gmail.com (Google) — IMAP imap.gmail.com:993, SMTP smtp.gmail.com:465 — App-Password required
+- outlook.com, hotmail.com, live.com (Microsoft) — IMAP outlook.office365.com:993, SMTP smtp.office365.com:587 STARTTLS — App-Password required
+- icloud.com, me.com, mac.com (Apple) — IMAP imap.mail.me.com:993, SMTP smtp.mail.me.com:587 STARTTLS — App-Password required
+- yahoo.com, ymail.com (Yahoo) — IMAP imap.mail.yahoo.com:993, SMTP smtp.mail.yahoo.com:465 — App-Password required
+- fastmail.com — IMAP imap.fastmail.com:993, SMTP smtp.fastmail.com:465 — App-Password required
+- posteo.de — IMAP posteo.de:993, SMTP posteo.de:465
+- mailbox.org — IMAP imap.mailbox.org:993, SMTP smtp.mailbox.org:465
+- gmx.com, gmx.de, gmx.net — IMAP imap.gmx.net:993, SMTP mail.gmx.net:465
+- web.de — IMAP imap.web.de:993, SMTP smtp.web.de:587 STARTTLS
+- proton.me, protonmail.com — requires ProtonMail Bridge running locally; IMAP 127.0.0.1:1143, SMTP 127.0.0.1:1025
+
+---
+
+## Client snippets
+
+### Claude Desktop
+
+File: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows).
+
+```json
+{
+  "mcpServers": {
+    "mail": {
+      "command": "npx",
+      "args": ["-y", "classic-imap-smtp-mcp"],
+      "env": {
+        "CLASSIC_IMAP_SMTP_USER": "<EMAIL>",
+        "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>",
+        "CLASSIC_IMAP_SMTP_IMAP_HOST": "<IMAP_HOST_IF_NOT_AUTODETECTED>",
+        "CLASSIC_IMAP_SMTP_SMTP_HOST": "<SMTP_HOST_IF_NOT_AUTODETECTED>"
+      }
+    }
+  }
+}
+```
+
+### Claude Code
+
+```bash
+claude mcp add mail \
+  -e CLASSIC_IMAP_SMTP_USER=<EMAIL> \
+  -e CLASSIC_IMAP_SMTP_PASS=<APP_PASSWORD> \
+  -- npx -y classic-imap-smtp-mcp
+```
+
+### Cursor
+
+File: `~/.cursor/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "mail": {
+      "command": "npx",
+      "args": ["-y", "classic-imap-smtp-mcp"],
+      "env": { "CLASSIC_IMAP_SMTP_USER": "<EMAIL>", "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>" }
+    }
+  }
+}
+```
+
+### Windsurf
+
+File: `~/.codeium/windsurf/mcp_config.json` — same structure as Cursor.
+
+### VS Code (GitHub Copilot MCP)
+
+File: workspace `.vscode/mcp.json` or user `settings.json` under the `mcp` key:
+
+```json
+{
+  "servers": {
+    "mail": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "classic-imap-smtp-mcp"],
+      "env": { "CLASSIC_IMAP_SMTP_USER": "<EMAIL>", "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>" }
+    }
+  }
+}
+```
+
+---
+
+## Full tool catalog (36 tools)
+
+Each tool's full Zod schema is exposed via `tools/list` in the MCP protocol. The summary below is enough to choose the right tool.
+
+### IMAP — Read
+
+| Tool | Purpose | Key inputs |
+|---|---|---|
+| `imap_list_mailboxes` | Enumerate folders with special-use flags | `account?`, `subscribed_only?` |
+| `imap_status_mailbox` | Get counts without SELECT | `mailbox`, `account?` |
+| `imap_list_messages` | Paginated message list (envelope only) | `mailbox`, `page?`, `page_size?`, `account?` |
+| `imap_get_message` | Full parsed message + attachment metadata | `uid`, `mailbox`, `account?` |
+| `imap_get_message_headers` | Headers only | `uid`, `mailbox`, `account?` |
+| `imap_get_message_raw` | RFC-822 raw source | `uid`, `mailbox`, `account?` |
+| `imap_get_messages_bulk` | Up to N UIDs in one call | `uids[]`, `mailbox`, `account?` |
+| `imap_search` | Full RFC-3501 SEARCH builder | `mailbox`, `criteria` (structured), `account?` |
+| `imap_download_attachment` | Extract a specific MIME part | `uid`, `mailbox`, `part_id` or `filename`, `save_path?`, `account?` |
+| `imap_get_thread` | Reconstruct conversation via References | `uid`, `mailbox`, `account?` |
+| `imap_get_quota` | RFC-2087 quota info | `mailbox?`, `account?` |
+| `imap_check_capabilities` | List server CAPABILITY | `account?` |
+
+### IMAP — Write
+
+| Tool | Purpose | Key inputs |
+|---|---|---|
+| `imap_mark_message` | STORE flags on/off | `uid`, `mailbox`, `add[]?`, `remove[]?`, `account?` |
+| `imap_bulk_mark` | Bulk STORE | `uids[]`, `mailbox`, `add[]?`, `remove[]?`, `account?` |
+| `imap_move_message` | MOVE (RFC 6851) | `uid`, `from_mailbox`, `to_mailbox`, `account?` |
+| `imap_copy_message` | COPY | `uid`, `from_mailbox`, `to_mailbox`, `account?` |
+| `imap_bulk_move` | Bulk MOVE | `uids[]`, `from_mailbox`, `to_mailbox`, `account?` |
+| `imap_append_message` | APPEND a message (drafts, import) | `mailbox`, `rfc822` or structured fields, `flags[]?`, `account?` |
+| `imap_expunge` | EXPUNGE | `mailbox`, `account?` |
+| `imap_delete_message` | STORE \Deleted, optional EXPUNGE | `uid`, `mailbox`, `expunge?`, `account?` |
+
+### IMAP — Mailbox CRUD
+
+| Tool | Purpose | Key inputs |
+|---|---|---|
+| `imap_create_mailbox` | CREATE | `mailbox`, `account?` |
+| `imap_delete_mailbox` | DELETE | `mailbox`, `account?` |
+| `imap_rename_mailbox` | RENAME | `from`, `to`, `account?` |
+| `imap_subscribe_mailbox` | SUBSCRIBE | `mailbox`, `account?` |
+| `imap_unsubscribe_mailbox` | UNSUBSCRIBE | `mailbox`, `account?` |
+
+### SMTP
+
+| Tool | Purpose | Key inputs |
+|---|---|---|
+| `smtp_send` | Send a new message | `to[]`, `subject`, `text?`, `html?`, `cc[]?`, `bcc[]?`, `attachments[]?`, `inline_images[]?`, `headers?`, `save_to_sent?` (default true), `sent_mailbox?`, `account?` |
+| `smtp_reply` | Reply with correct threading | `original_uid`, `original_mailbox`, `text?`, `html?`, `reply_all?`, `include_original?`, `save_to_sent?`, `sent_mailbox?`, `account?` |
+| `smtp_forward` | Forward a message | `original_uid`, `original_mailbox`, `to[]`, `text?`, `as_attachment?`, `save_to_sent?`, `sent_mailbox?`, `account?` |
+| `smtp_verify_connection` | Health check | `account?` |
+| `smtp_send_raw` | Send a pre-formed RFC-822 | `rfc822`, `save_to_sent?`, `sent_mailbox?`, `account?` |
+
+### Account-Management
+
+| Tool | Purpose | Key inputs |
+|---|---|---|
+| `account_list` | List configured accounts (masked) | — |
+| `account_add` | Add a new account to config | `name`, `user`, `pass`, `imap_host?`, `smtp_host?`, ... |
+| `account_update` | Modify an existing account (e.g. new app-password) | `name`, fields to change |
+| `account_delete` | Remove an account from config | `name` |
+
+### Meta — server introspection
+
+| Tool | Purpose | Key inputs |
+|---|---|---|
+| `meta_health` | IMAP + SMTP reachability, latency, capabilities | `account?` |
+| `meta_server_info` | Active tools, active mode, version | — |
+
+---
+
+## Feature flags & tool selection
+
+All switches are CLI args (never env vars). Tools are registered conditionally at startup.
+
+**Four feature flags (coarse):**
+- `--safe` — removes delete tools (`imap_delete_message`, `imap_expunge`, `imap_delete_mailbox`); sending/moving/marking still work
+- `--readonly` — read-only: all writing IMAP ops + SMTP send removed; `smtp_verify_connection` and `account_list` remain
+- `--no-imap` — removes all IMAP tools
+- `--no-smtp` — removes all SMTP tools
+
+`--safe` + `--readonly` combine (readonly is stricter, wins). `--no-imap` + `--no-smtp` together = empty server → startup error.
+
+**Granular (expert mode), prefix wildcards supported:**
+- `--allow-tools=<csv>` — explicitly enable tools; **overrides feature flags** (brings tools back)
+- `--deny-tools=<csv>` — explicitly remove tools; **wins over everything**, including allow
+
+Wildcards: `imap_*`, `smtp_*`, `account_*`, `meta_*`, `imap_delete_*`, `imap_bulk_*`, etc.
+
+**Cascade (coarse → fine, fine wins):** feature flags set the base → `--allow-tools` overrides them → `--deny-tools` has the final word.
+
+Examples: `--readonly --allow-tools=smtp_send` (read-only but sending allowed) · `--deny-tools=account_*` (no account management) · `--allow-tools=imap_* --deny-tools=imap_delete_*` (all IMAP except deletes).
+
+---
+
+## How to call classic-imap-smtp-mcp's tools (for consuming agents)
+
+classic-imap-smtp-mcp follows the standard MCP tool-call contract. Pseudo-flow:
+
+1. `tools/list` returns the currently registered subset (depends on the active flags).
+2. Each tool has a JSON Schema (derived from Zod). Validate inputs client-side if possible.
+3. Errors come back as structured objects: `{ code, message, details? }`. Common codes: `AUTH_FAILED`, `MAILBOX_NOT_FOUND`, `UID_NOT_FOUND`, `RATE_LIMITED`, `TLS_ERROR`, `CONFIG_ERROR`, `IMAP_PROTOCOL_ERROR`, `SMTP_RELAY_ERROR`, `ACCOUNT_NOT_FOUND`, `ATTACHMENT_NOT_FOUND`, `PERMISSION_DENIED`.
+4. Long-running operations (bulk-move with 1000+ UIDs) may emit progress notifications.
+
+### Conventions worth knowing
+
+- **UIDs are per-mailbox.** Always pass `mailbox` together with `uid`.
+- **Folder names are server-native.** Use `imap_list_mailboxes` first; do not hard-code names like "Sent" or "Trash" — providers vary (`[Gmail]/Sent Mail`, `INBOX.Trash`, etc.). Special-use flags from `imap_list_mailboxes` are the safe way to find them.
+- **`account` is optional** when a default account is configured. When it's set in the config, omit `account` unless the user explicitly says otherwise.
+- **Attachments**: `imap_get_message` returns metadata only by default. To download a binary attachment, follow up with `imap_download_attachment`.
+- **Threading**: `smtp_reply` does the right thing automatically — no need to manually construct `In-Reply-To`/`References` headers.
+- **Sent copies**: send tools auto-append a copy to the Sent folder (`save_to_sent`, default true) — found via the `\Sent` special-use flag. Send and save are separate: if sending succeeds but the Sent-append fails, the result reports `savedToSent: false` plus `sentSaveError`, and the mail is still sent. There is no outbox/retry queue — a failed send is reported synchronously as `SMTP_RELAY_ERROR`.
+
+---
+
+## Troubleshooting (common user issues)
+
+- "Login fails on Gmail" → User probably uses regular password. Direct them to https://myaccount.google.com/apppasswords.
+- "Connection times out" → Likely firewall or wrong port. Default IMAP 993 (TLS), SMTP 465 (TLS) or 587 (STARTTLS).
+- "Self-signed certificate" → Internal/selfhosted server. Set `CLASSIC_IMAP_SMTP_VERIFY_TLS=false` *only* if user understands the risk.
+- "I don't see all the tools" → User probably applied a restrictive flag. Check the `--safe`, `--readonly`, `--no-imap`, `--no-smtp`, `--deny-tools` CLI args in the client config (these are CLI args, not env vars).
+- "Folder not found" → User passed a name like `Sent`; the server may name it differently. Run `imap_list_mailboxes` first.
+
+---
+
+## Versioning
+
+Semantic Versioning. `0.x.y` until API stabilizes. Tool names and config keys are stable within a major version.
+
+## License
+
+TBD (set before v1.0 release).

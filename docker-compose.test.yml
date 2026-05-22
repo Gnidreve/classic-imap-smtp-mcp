@@ -1,0 +1,10 @@
+# Lokale Test-Infrastruktur fuer Integration-Tests: Dovecot (IMAP) + Mailpit (SMTP). Hochgefahren von nightly.yml / test:integration.
+# PHASE 4: konkrete Account-Seeds + Mailbox-Struktur ergaenzen.
+services:
+  dovecot:
+    image: dovecot/dovecot:latest
+    ports: ["143:143", "993:993"]
+    # PHASE 4: Test-Accounts + INBOX/Sent/Drafts/Archive seeden
+  mailpit:
+    image: axllent/mailpit:latest
+    ports: ["1025:1025", "8025:8025"]

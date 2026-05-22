@@ -1,0 +1,45 @@
+# classic-imap-smtp-mcp — Multi-Account Config
+# Pfad:
+#   Linux/macOS: ~/.config/classic-imap-smtp-mcp/config.toml
+#   Windows:     %APPDATA%\classic-imap-smtp-mcp\config.toml
+# Erzeugen mit: npx classic-imap-smtp-mcp init
+# Datei sollte Permission 0600 haben — der Server warnt sonst.
+
+default_account = "personal"
+
+# Optional: globale Rate-Limits (pro Account überschreibbar)
+[limits]
+smtp_per_minute = 10
+imap_ops_per_second = 100
+
+# --- Account mit Provider-Auto-Detect (nur user/pass nötig) ---
+[[accounts]]
+name = "personal"
+user = "you@gmail.com"
+pass = "your-app-password"
+from_name = "Your Name"
+
+# --- Account mit explizitem Host/Port ---
+[[accounts]]
+name = "work"
+user = "you@company.com"
+pass = "another-app-password"
+imap_host = "imap.company.com"
+imap_port = 993
+imap_tls = "implicit"          # implicit | starttls | none
+smtp_host = "smtp.company.com"
+smtp_port = 587
+smtp_tls = "starttls"
+from_name = "You at Work"
+
+# --- Selfhosted mit selbst-signiertem Zertifikat ---
+[[accounts]]
+name = "selfhosted"
+user = "me@mybox.tld"
+pass = "supersecret"
+imap_host = "mail.mybox.tld"
+smtp_host = "mail.mybox.tld"
+verify_tls = false             # nur für vertrauenswürdige interne Server; wird im Log markiert
+
+# Bei mehreren Accounts: jedes Tool akzeptiert einen optionalen `account`-Parameter.
+# Ohne Parameter → default_account.

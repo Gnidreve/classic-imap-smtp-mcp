@@ -1,0 +1,10 @@
+# Pre-commit-Hooks: lint + typecheck auf staged Files, bevor ein Commit durchgeht.
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      glob: "*.{ts,js,json}"
+      run: npx biome check {staged_files}
+    typecheck:
+      glob: "*.ts"
+      run: npm run typecheck
