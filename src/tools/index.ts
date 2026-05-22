@@ -49,6 +49,7 @@ import accountUpdate from "./account/update.js";
 import metaHealth from "./meta/health.js";
 import metaServerInfo from "./meta/server-info.js";
 
+// biome-ignore lint/suspicious/noExplicitAny: covariant type erasure for mixed-tool array
 export const ALL_TOOLS: ToolDefinition<any, any>[] = [
   listMailboxes,
   statusMailbox,

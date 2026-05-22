@@ -61,9 +61,11 @@ function parseSearchDate(value: string): Date {
   };
   const parts = value.split("-");
   if (parts.length === 3) {
+    // biome-ignore lint/style/noNonNullAssertion: parts.length === 3 verified above
     const day = parts[0]!.padStart(2, "0");
     const monKey = parts[1]?.toLowerCase().slice(0, 3);
     const mon = monKey ? months[monKey] : undefined;
+    // biome-ignore lint/style/noNonNullAssertion: parts.length === 3 verified above
     const yearRaw = parts[2]!;
     const year = yearRaw.length === 2 ? `20${yearRaw}` : yearRaw;
     if (mon && day) return new Date(`${year}-${mon}-${day}`);

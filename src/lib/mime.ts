@@ -60,7 +60,8 @@ function extractFilenameFromHeaders(headers: Map<string, unknown> | undefined): 
     const m = cd.match(/filename\*?=(?:[^']*'[^']*')?([^;\s]+)/i);
     if (m) {
       try {
-        return decodeURIComponent(m[1]!);
+        const captured = m[1];
+        return captured ? decodeURIComponent(captured) : undefined;
       } catch {
         return m[1];
       }

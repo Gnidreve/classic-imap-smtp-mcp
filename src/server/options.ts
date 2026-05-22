@@ -35,6 +35,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
   let version = false;
 
   for (let i = 0; i < argv.length; i++) {
+    // biome-ignore lint/style/noNonNullAssertion: loop bound ensures i < argv.length
     const arg = argv[i]!;
     if (arg === "init" || arg === "test" || arg === "list-tools") {
       subcommand = arg;

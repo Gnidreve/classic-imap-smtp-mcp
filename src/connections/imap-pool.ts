@@ -49,6 +49,7 @@ export class ImapPool {
   private async connectWithRetry(acc: AccountConfig, attempt = 0): Promise<ImapFlow> {
     try {
       const opts: ImapFlowOptions = {
+        // biome-ignore lint/style/noNonNullAssertion: config validated at load
         host: acc.imap_host!,
         port: acc.imap_port,
         auth: {

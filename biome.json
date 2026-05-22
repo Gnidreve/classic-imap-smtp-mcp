@@ -6,7 +6,7 @@
     "rules": {
       "recommended": true,
       "suspicious": { "noConsoleLog": "error" },
-      "complexity": { "noExcessiveCognitiveComplexity": "warn" }
+      "complexity": { "noExcessiveCognitiveComplexity": "off" }
     }
   },
   "formatter": {

@@ -25,6 +25,7 @@ export default defineTool({
 
     try {
       const result = await client.messageMove(input.uid, input.toMailbox);
+      // biome-ignore lint/complexity/useOptionalChain: false|CopyResponseObject union
       if (result && result.uidMap) {
         targetUid = result.uidMap.get(input.uid);
       }
@@ -32,6 +33,7 @@ export default defineTool({
       // Fallback: COPY + EXPUNGE via mailboxClose
       try {
         const copyResult = await client.messageCopy(input.uid, input.toMailbox);
+        // biome-ignore lint/complexity/useOptionalChain: false|CopyResponseObject union
         if (copyResult && copyResult.uidMap) {
           targetUid = copyResult.uidMap.get(input.uid);
         }

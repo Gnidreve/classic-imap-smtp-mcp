@@ -69,6 +69,7 @@ export class SmtpPool {
       }
 
       const transporter = nodemailer.createTransport({
+        // biome-ignore lint/style/noNonNullAssertion: config validated at load
         host: acc.smtp_host!,
         port: acc.smtp_port,
         secure: acc.smtp_tls === "implicit",

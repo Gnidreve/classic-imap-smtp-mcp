@@ -24,6 +24,7 @@ export default defineTool({
 
     try {
       const result = await client.messageCopy(input.uid, input.toMailbox);
+      // biome-ignore lint/complexity/useOptionalChain: false|CopyResponseObject union breaks ?.
       if (result && result.uidMap) {
         targetUid = result.uidMap.get(input.uid);
       }

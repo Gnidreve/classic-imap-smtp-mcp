@@ -47,7 +47,7 @@ export default defineTool({
     if (!msg) throw new UidNotFoundError(input.uid, input.mailbox);
 
     const raw = msg.source?.toString() ?? "";
-    let parsed;
+    let parsed: import("../../lib/mime.js").ParsedMessage;
     try {
       parsed = await parseMime(raw);
     } catch {

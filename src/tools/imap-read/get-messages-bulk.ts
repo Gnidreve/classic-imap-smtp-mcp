@@ -1,7 +1,7 @@
 // Bis N UIDs in einem Call holen
 import { z } from "zod";
 import { MailboxNotFoundError } from "../../lib/errors.js";
-import { parseMime } from "../../lib/mime.js";
+import { type ParsedMessage, parseMime } from "../../lib/mime.js";
 import { defineTool } from "../_types.js";
 
 function addressArray(addr: unknown): Array<{ name?: string; address: string }> {
@@ -49,7 +49,7 @@ export default defineTool({
     })) {
       uidSet.delete(msg.uid);
       const raw = msg.source?.toString() ?? "";
-      let parsed;
+      let parsed: ParsedMessage;
       try {
         parsed = await parseMime(raw);
       } catch {

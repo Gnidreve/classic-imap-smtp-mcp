@@ -65,6 +65,7 @@ function loadFromFile(path: string): ConfigStore {
       smtp_host: acc.smtp_host ?? preset?.smtp_host,
     });
   }
+  // biome-ignore lint/style/noNonNullAssertion: zod validates accounts min(1)
   const defaultAccount = parsed.default_account ?? parsed.accounts[0]!.name;
   return { mode: "config-file", defaultAccount, accounts, configPath: path };
 }

@@ -52,6 +52,7 @@ export default defineTool({
     const accountName = ctx.resolveAccount(input.account);
     const transport = await ctx.smtp.acquire(accountName);
 
+    // biome-ignore lint/style/noNonNullAssertion: resolveAccount guarantees existence
     const accConfig = ctx.config.accounts.get(accountName)!;
 
     const mailOptions: nodemailer.SendMailOptions = {

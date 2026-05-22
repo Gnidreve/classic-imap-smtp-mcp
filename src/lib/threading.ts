@@ -43,6 +43,7 @@ export function reconstructThread(
   const queue = [rootUid];
 
   while (queue.length > 0) {
+    // biome-ignore lint/style/noNonNullAssertion: queue.length > 0 checked in while
     const currentUid = queue.pop()!;
     if (seen.has(currentUid)) continue;
     seen.add(currentUid);
@@ -80,10 +81,12 @@ export function reconstructThread(
       }
     }
 
-    if (current.inReplyTo && byMessageId.has(current.inReplyTo)) {
-      const parent = byMessageId.get(current.inReplyTo)!;
-      threadSet.add(parent.uid);
-      queue.push(parent.uid);
+    if (current.inReplyTo) {
+      const parent = byMessageId.get(current.inReplyTo);
+      if (parent) {
+        threadSet.add(parent.uid);
+        queue.push(parent.uid);
+      }
     }
     if (current.references) {
       for (const ref of current.references) {
