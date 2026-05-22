@@ -4,15 +4,29 @@ import type { ResolvedOptions } from "./options.js";
 
 // Tools, die im --readonly-Modus erlaubt bleiben (lesend + introspektiv).
 const READONLY_TOOLS = new Set<string>([
-  "imap_list_mailboxes", "imap_status_mailbox", "imap_list_messages", "imap_get_message",
-  "imap_get_message_headers", "imap_get_message_raw", "imap_get_messages_bulk", "imap_search",
-  "imap_download_attachment", "imap_get_thread", "imap_get_quota", "imap_check_capabilities",
-  "smtp_verify_connection", "account_list", "meta_health", "meta_server_info",
+  "imap_list_mailboxes",
+  "imap_status_mailbox",
+  "imap_list_messages",
+  "imap_get_message",
+  "imap_get_message_headers",
+  "imap_get_message_raw",
+  "imap_get_messages_bulk",
+  "imap_search",
+  "imap_download_attachment",
+  "imap_get_thread",
+  "imap_get_quota",
+  "imap_check_capabilities",
+  "smtp_verify_connection",
+  "account_list",
+  "meta_health",
+  "meta_server_info",
 ]);
 
 // Tools, die --safe entfernt (Loeschen).
 const DELETE_TOOLS = new Set<string>([
-  "imap_delete_message", "imap_expunge", "imap_delete_mailbox",
+  "imap_delete_message",
+  "imap_expunge",
+  "imap_delete_mailbox",
 ]);
 
 // Praefix-Wildcard-Match: "imap_*" matcht "imap_search"; exakte Namen matchen exakt.

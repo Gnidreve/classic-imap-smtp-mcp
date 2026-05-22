@@ -6,8 +6,52 @@ export default defineTool({
   name: "imap_get_quota",
   description: "Quota-Info abfragen (RFC 2087)",
   category: "imap-read",
-  inputSchema: z.object({}), // PHASE 3: echtes Schema
-  handler: async (_input, _ctx) => {
-    throw new Error("imap_get_quota not implemented (Phase 3)");
+  inputSchema: z.object({
+    account: z.string().optional().describe("Account name (default: default_account)"),
+  }),
+  handler: async (input, ctx) => {
+    const accountName = ctx.resolveAccount(input.account);
+    const client = await ctx.imap.acquire(accountName);
+
+    // Check if server supports QUOTA via capabilities
+    const caps = [...client.capabilities.keys()];
+    if (!caps.some((c) => c.toUpperCase() === "QUOTA")) {
+      return { root: "INBOX", usage: 0, limit: -1 };
+    }
+
+    try {
+      const result = await client.getQuota();
+      if (!result) {
+        return { root: "INBOX", usage: 0, limit: -1 };
+      }
+
+      const usage = result.storage?.used ?? result.messages?.used ?? 0;
+      const limit = result.storage?.limit ?? result.messages?.limit ?? -1;
+      const resources: Array<{ name: string; usage: number; limit: number }> = [];
+      if (result.storage) {
+        resources.push({
+          name: "STORAGE",
+          usage: result.storage.used,
+          limit: result.storage.limit,
+        });
+      }
+      if (result.messages) {
+        resources.push({
+          name: "MESSAGES",
+          usage: result.messages.used,
+          limit: result.messages.limit,
+        });
+      }
+
+      return {
+        root: result.path,
+        usage,
+        limit,
+        ...(resources.length > 1 ? { resources } : {}),
+      };
+    } catch {
+      // Server doesn't support QUOTA or no quota
+      return { root: "INBOX", usage: 0, limit: -1 };
+    }
   },
 });

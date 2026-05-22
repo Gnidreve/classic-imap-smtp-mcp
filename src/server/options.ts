@@ -13,8 +13,8 @@ export interface ResolvedOptions {
 }
 
 export interface ParsedArgs {
-  subcommand?: "init" | "test" | "list-tools";
-  subcommandArg?: string;
+  subcommand: "init" | "test" | "list-tools" | undefined;
+  subcommandArg: string | undefined;
   options: ResolvedOptions;
   help: boolean;
   version: boolean;
@@ -38,7 +38,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     const arg = argv[i]!;
     if (arg === "init" || arg === "test" || arg === "list-tools") {
       subcommand = arg;
-      if (arg === "test" && argv[i + 1] && !argv[i + 1]!.startsWith("-")) {
+      if (arg === "test" && argv[i + 1] && !argv[i + 1]?.startsWith("-")) {
         subcommandArg = argv[++i];
       }
     } else if (arg === "--safe") opts.safe = true;
@@ -52,11 +52,16 @@ export function parseArgs(argv: string[]): ParsedArgs {
     else if (arg.startsWith("--account=")) opts.account = val(arg);
     else if (arg.startsWith("--config=")) opts.configPath = val(arg);
     else if (arg.startsWith("--log-level=")) opts.logLevel = val(arg);
-    else if (arg.startsWith("--log-format=")) opts.logFormat = val(arg) === "pretty" ? "pretty" : "json";
+    else if (arg.startsWith("--log-format="))
+      opts.logFormat = val(arg) === "pretty" ? "pretty" : "json";
   }
 
   return { subcommand, subcommandArg, options: opts, help, version };
 }
 
 const val = (arg: string) => arg.slice(arg.indexOf("=") + 1);
-const csv = (arg: string) => val(arg).split(",").map((s) => s.trim()).filter(Boolean);
+const csv = (arg: string) =>
+  val(arg)
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);

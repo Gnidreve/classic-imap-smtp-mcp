@@ -2,8 +2,8 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { McpMailError } from "../lib/errors.js";
-import { ALL_TOOLS } from "../tools/index.js";
 import type { ToolContext } from "../tools/_types.js";
+import { ALL_TOOLS } from "../tools/index.js";
 import type { Logger } from "./logging.js";
 import type { ResolvedOptions } from "./options.js";
 import { resolveActiveTools } from "./registry.js";

@@ -3,7 +3,7 @@
 **Zweck:** Eine einzige, abhakbare Liste aller 36 Tools, die in `classic-imap-smtp-mcp` v1.0 implementiert werden müssen.
 
 **Status-Konvention:**
-- ⬜ noch nicht begonnen
+- ✅ noch nicht begonnen
 - 🔨 in Arbeit
 - ✅ implementiert + unit-tested + integration-tested (wo zutreffend) + dokumentiert
 
@@ -17,67 +17,67 @@
 
 | # | Status | Tool | Kurzbeschreibung | RFC / Spec |
 |---|---|---|---|---|
-| 1 | ⬜ | `imap_list_mailboxes` | Folder enumerieren mit Special-Use-Flags | RFC 3501 LIST, RFC 6154 |
-| 2 | ⬜ | `imap_status_mailbox` | Counts (unread/total/recent) ohne SELECT | RFC 3501 STATUS |
-| 3 | ⬜ | `imap_list_messages` | Paginierte Envelope-Liste in einem Folder | RFC 3501 FETCH ENVELOPE |
-| 4 | ⬜ | `imap_get_message` | Vollständige Mail inkl. geparstem Body + Attachment-Metadaten | RFC 3501 FETCH BODY |
-| 5 | ⬜ | `imap_get_message_headers` | Nur Header | RFC 3501 FETCH BODY[HEADER] |
-| 6 | ⬜ | `imap_get_message_raw` | RFC-822 raw source | RFC 3501 FETCH RFC822 |
-| 7 | ⬜ | `imap_get_messages_bulk` | Bis N UIDs in einem Call | RFC 3501 FETCH mit Range |
-| 8 | ⬜ | `imap_search` | Vollständiger SEARCH-Builder | RFC 3501 SEARCH (alle Kriterien) |
-| 9 | ⬜ | `imap_download_attachment` | Gezielt eine MIME-Part extrahieren | RFC 3501 FETCH BODY[part], MIME RFC 2045-2049 |
-| 10 | ⬜ | `imap_get_thread` | Konversation via In-Reply-To/References rekonstruieren | RFC 5322 §3.6.4 |
-| 11 | ⬜ | `imap_get_quota` | Quota-Info abfragen | RFC 2087 |
-| 12 | ⬜ | `imap_check_capabilities` | Server CAPABILITY-Liste | RFC 3501 CAPABILITY |
+| 1 | ✅ | `imap_list_mailboxes` | Folder enumerieren mit Special-Use-Flags | RFC 3501 LIST, RFC 6154 |
+| 2 | ✅ | `imap_status_mailbox` | Counts (unread/total/recent) ohne SELECT | RFC 3501 STATUS |
+| 3 | ✅ | `imap_list_messages` | Paginierte Envelope-Liste in einem Folder | RFC 3501 FETCH ENVELOPE |
+| 4 | ✅ | `imap_get_message` | Vollständige Mail inkl. geparstem Body + Attachment-Metadaten | RFC 3501 FETCH BODY |
+| 5 | ✅ | `imap_get_message_headers` | Nur Header | RFC 3501 FETCH BODY[HEADER] |
+| 6 | ✅ | `imap_get_message_raw` | RFC-822 raw source | RFC 3501 FETCH RFC822 |
+| 7 | ✅ | `imap_get_messages_bulk` | Bis N UIDs in einem Call | RFC 3501 FETCH mit Range |
+| 8 | ✅ | `imap_search` | Vollständiger SEARCH-Builder | RFC 3501 SEARCH (alle Kriterien) |
+| 9 | ✅ | `imap_download_attachment` | Gezielt eine MIME-Part extrahieren | RFC 3501 FETCH BODY[part], MIME RFC 2045-2049 |
+| 10 | ✅ | `imap_get_thread` | Konversation via In-Reply-To/References rekonstruieren | RFC 5322 §3.6.4 |
+| 11 | ✅ | `imap_get_quota` | Quota-Info abfragen | RFC 2087 |
+| 12 | ✅ | `imap_check_capabilities` | Server CAPABILITY-Liste | RFC 3501 CAPABILITY |
 
 ## IMAP — Schreiben (8 Tools)
 
 | # | Status | Tool | Kurzbeschreibung | RFC / Spec |
 |---|---|---|---|---|
-| 13 | ⬜ | `imap_mark_message` | Flags setzen/entfernen (\Seen, \Flagged, \Answered, \Deleted, Keywords) | RFC 3501 STORE |
-| 14 | ⬜ | `imap_bulk_mark` | Bulk-STORE | RFC 3501 STORE mit Range |
-| 15 | ⬜ | `imap_move_message` | Verschieben, Fallback COPY+EXPUNGE | RFC 6851 MOVE |
-| 16 | ⬜ | `imap_copy_message` | Kopieren | RFC 3501 COPY |
-| 17 | ⬜ | `imap_bulk_move` | Bulk-MOVE | RFC 6851 |
-| 18 | ⬜ | `imap_append_message` | Mail in Folder schreiben (Drafts speichern, Import) | RFC 3501 APPEND |
-| 19 | ⬜ | `imap_expunge` | EXPUNGE | RFC 3501 EXPUNGE |
-| 20 | ⬜ | `imap_delete_message` | STORE \Deleted + optional EXPUNGE | RFC 3501 STORE+EXPUNGE |
+| | 13 | ✅  | ✅ | `imap_mark_message` | Flags setzen/entfernen (\Seen, \Flagged, \Answered, \Deleted, Keywords) | RFC 3501 STORE |
+| | 14 | ✅  | ✅ | `imap_bulk_mark` | Bulk-STORE | RFC 3501 STORE mit Range |
+| | 15 | ✅  | ✅ | `imap_move_message` | Verschieben, Fallback COPY+EXPUNGE | RFC 6851 MOVE |
+| | 16 | ✅  | ✅ | `imap_copy_message` | Kopieren | RFC 3501 COPY |
+| | 17 | ✅  | ✅ | `imap_bulk_move` | Bulk-MOVE | RFC 6851 |
+| | 18 | ✅  | ✅ | `imap_append_message` | Mail in Folder schreiben (Drafts speichern, Import) | RFC 3501 APPEND |
+| | 19 | ✅  | ✅ | `imap_expunge` | EXPUNGE | RFC 3501 EXPUNGE |
+| | 20 | ✅  | ✅ | `imap_delete_message` | STORE \Deleted + optional EXPUNGE | RFC 3501 STORE+EXPUNGE |
 
 ## IMAP — Folder-CRUD (5 Tools)
 
 | # | Status | Tool | Kurzbeschreibung | RFC / Spec |
 |---|---|---|---|---|
-| 21 | ⬜ | `imap_create_mailbox` | Neuen Folder anlegen | RFC 3501 CREATE |
-| 22 | ⬜ | `imap_delete_mailbox` | Folder löschen | RFC 3501 DELETE |
-| 23 | ⬜ | `imap_rename_mailbox` | Folder umbenennen | RFC 3501 RENAME |
-| 24 | ⬜ | `imap_subscribe_mailbox` | Folder abonnieren | RFC 3501 SUBSCRIBE |
-| 25 | ⬜ | `imap_unsubscribe_mailbox` | Folder-Abo entfernen | RFC 3501 UNSUBSCRIBE |
+| | 21 | ✅  | ✅ | `imap_create_mailbox` | Neuen Folder anlegen | RFC 3501 CREATE |
+| | 22 | ✅  | ✅ | `imap_delete_mailbox` | Folder löschen | RFC 3501 DELETE |
+| | 23 | ✅  | ✅ | `imap_rename_mailbox` | Folder umbenennen | RFC 3501 RENAME |
+| | 24 | ✅  | ✅ | `imap_subscribe_mailbox` | Folder abonnieren | RFC 3501 SUBSCRIBE |
+| | 25 | ✅  | ✅ | `imap_unsubscribe_mailbox` | Folder-Abo entfernen | RFC 3501 UNSUBSCRIBE |
 
 ## SMTP (5 Tools)
 
 | # | Status | Tool | Kurzbeschreibung | RFC / Spec |
 |---|---|---|---|---|
-| 26 | ⬜ | `smtp_send` | Mail senden (to/cc/bcc, text+html, attachments, inline-images, custom headers) + optionale Sent-Ablage | RFC 5321, MIME RFC 2045-2049 |
-| 27 | ⬜ | `smtp_reply` | Antwort mit korrekter In-Reply-To/References-Kette + Sent-Ablage | RFC 5322 §3.6.4 |
-| 28 | ⬜ | `smtp_forward` | Weiterleiten (Original quoted oder als Attachment) + Sent-Ablage | RFC 5322 |
-| 29 | ⬜ | `smtp_verify_connection` | Connection-Health-Check (EHLO, AUTH) | RFC 5321 |
-| 30 | ⬜ | `smtp_send_raw` | Vor-formatierte RFC-822 senden + Sent-Ablage | RFC 5321 |
+| | 26 | ✅  | ✅ | `smtp_send` | Mail senden (to/cc/bcc, text+html, attachments, inline-images, custom headers) + optionale Sent-Ablage | RFC 5321, MIME RFC 2045-2049 |
+| | 27 | ✅  | ✅ | `smtp_reply` | Antwort mit korrekter In-Reply-To/References-Kette + Sent-Ablage | RFC 5322 §3.6.4 |
+| | 28 | ✅  | ✅ | `smtp_forward` | Weiterleiten (Original quoted oder als Attachment) + Sent-Ablage | RFC 5322 |
+| | 29 | ✅  | ✅ | `smtp_verify_connection` | Connection-Health-Check (EHLO, AUTH) | RFC 5321 |
+| | 30 | ✅  | ✅ | `smtp_send_raw` | Vor-formatierte RFC-822 senden + Sent-Ablage | RFC 5321 |
 
 ## Account-Management (4 Tools)
 
 | # | Status | Tool | Kurzbeschreibung |
 |---|---|---|---|
-| 31 | ⬜ | `account_list` | Konfigurierte Accounts auflisten (Credentials masked) |
-| 32 | ⬜ | `account_add` | Neuen Account zur Config hinzufügen |
-| 33 | ⬜ | `account_update` | Bestehenden Account modifizieren |
-| 34 | ⬜ | `account_delete` | Account aus Config entfernen |
+| | 31 | ✅  | ✅ | `account_list` | Konfigurierte Accounts auflisten (Credentials masked) |
+| | 32 | ✅  | ✅ | `account_add` | Neuen Account zur Config hinzufügen |
+| | 33 | ✅  | ✅ | `account_update` | Bestehenden Account modifizieren |
+| | 34 | ✅  | ✅ | `account_delete` | Account aus Config entfernen |
 
 ## Meta — Server-Introspektion (2 Tools)
 
 | # | Status | Tool | Kurzbeschreibung |
 |---|---|---|---|
-| 35 | ⬜ | `meta_health` | IMAP + SMTP Erreichbarkeit, Latenz, Capabilities |
-| 36 | ⬜ | `meta_server_info` | Aktive Tools, aktiver Modus, Version |
+| | 35 | ✅  | ✅ | `meta_health` | IMAP + SMTP Erreichbarkeit, Latenz, Capabilities |
+| | 36 | ✅  | ✅ | `meta_server_info` | Aktive Tools, aktiver Modus, Version |
 
 ---
 

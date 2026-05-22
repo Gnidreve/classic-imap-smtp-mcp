@@ -6,8 +6,19 @@ export default defineTool({
   name: "account_list",
   description: "Konfigurierte Accounts auflisten (Credentials masked)",
   category: "account",
-  inputSchema: z.object({}), // PHASE 3: echtes Schema
-  handler: async (_input, _ctx) => {
-    throw new Error("account_list not implemented (Phase 3)");
+  inputSchema: z.object({}),
+  handler: async (_input, ctx) => {
+    const accounts = [...ctx.config.accounts.entries()].map(([name, acc]) => ({
+      name,
+      user: acc.user,
+      imapHost: acc.imap_host ?? "auto-detect",
+      smtpHost: acc.smtp_host ?? "auto-detect",
+    }));
+
+    return {
+      defaultAccount: ctx.config.defaultAccount,
+      accounts,
+      mode: ctx.config.mode,
+    };
   },
 });

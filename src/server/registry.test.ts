@@ -1,16 +1,24 @@
 // Beispiel-Unit-Test: prueft die Kaskaden-Logik der Registry (Feature-Flags, Allow ueberschreibt, Deny gewinnt, Wildcards).
 import { describe, expect, it } from "vitest";
 import type { ToolDefinition } from "../tools/_types.js";
-import { resolveActiveTools } from "./registry.js";
 import type { ResolvedOptions } from "./options.js";
+import { resolveActiveTools } from "./registry.js";
 
 const base: ResolvedOptions = {
-  safe: false, readonly: false, noImap: false, noSmtp: false,
-  logLevel: "info", logFormat: "json",
+  safe: false,
+  readonly: false,
+  noImap: false,
+  noSmtp: false,
+  logLevel: "info",
+  logFormat: "json",
 };
 
 const fakeTool = (name: string, category: ToolDefinition["category"]): ToolDefinition => ({
-  name, category, description: "", inputSchema: {} as never, handler: async () => ({}),
+  name,
+  category,
+  description: "",
+  inputSchema: {} as never,
+  handler: async () => ({}),
 });
 
 const TOOLS: ToolDefinition[] = [
@@ -22,7 +30,10 @@ const TOOLS: ToolDefinition[] = [
   fakeTool("meta_server_info", "meta"),
 ];
 
-const names = (o: ResolvedOptions) => resolveActiveTools(TOOLS, o).map((t) => t.name).sort();
+const names = (o: ResolvedOptions) =>
+  resolveActiveTools(TOOLS, o)
+    .map((t) => t.name)
+    .sort();
 
 describe("resolveActiveTools cascade", () => {
   it("default: all tools active", () => {
