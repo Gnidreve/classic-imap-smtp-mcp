@@ -32,25 +32,13 @@ Full installation instructions: [`docs/install.md`](docs/install.md)
 | Understand tool output structures | [`docs/output-shapes.md`](docs/output-shapes.md) |
 | Get client config snippets (Cursor, Windsurf, VS Code) | [`docs/clients.md`](docs/clients.md) |
 | See provider compatibility matrix | [`docs/provider-matrix.md`](docs/provider-matrix.md) |
+| See comparison with similar MCPs | [`docs/comparison.md`](docs/comparison.md) |
 | Set up an LLM to consume this server | [`docs/llms.txt`](docs/llms.txt) |
 | Contribute code or understand architecture | [`AGENTS.md`](AGENTS.md) |
 | Report a vulnerability | [`docs/SECURITY.md`](docs/SECURITY.md) |
 | Read release notes | [`CHANGELOG.md`](CHANGELOG.md) |
 
----
-
-## Quick Comparison
-
-| Feature | classic-imap-smtp-mcp | Others |
-|---------|----------------------|--------|
-| Full mail client toolset | ✅ 36 tools | ⚠️ Partial |
-| Multi-account | ✅ | ✅ Some |
-| CLI feature toggles | ✅ `--readonly`, `--safe`, `--allow-tools`, `--deny-tools` | ❌ |
-| Sent save via IMAP APPEND | ✅ Automatic | ❌ Most |
-| Folder CRUD | ✅ | ❌ Most |
-| Dedicated reply/forward | ✅ | ⚠️ |
-| Scope | **Classic IMAP/SMTP only** | Varies |
-| License | MIT | Varies |
+For a detailed feature comparison with other MCP mail servers, see [`docs/comparison.md`](docs/comparison.md).
 
 ---
 

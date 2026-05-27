@@ -260,6 +260,7 @@ Before proposing a PR:
 | `docs/tools.md` | ✅ | Full tool catalog |
 | `docs/config.md` | ✅ | Configuration, CLI flags, security |
 | `docs/clients.md` | ✅ | Client config snippets |
+| `docs/comparison.md` | ✅ | Comparison with similar MCPs |
 | `CHANGELOG.md` | ✅ | Release notes (Keep a Changelog format) |
 | `docs/clients.md` | ✅ | Client config snippets (Cursor, Windsurf, VS Code, …) |
 | `docs/provider-matrix.md` | 🔜 | Provider smoke test results |
