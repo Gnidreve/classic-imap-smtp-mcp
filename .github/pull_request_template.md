@@ -1,7 +1,7 @@
 ## Was ändert dieser PR?
 
 ## Checkliste (siehe AGENTS.md)
-- [ ] Tool-Definition entspricht README + output-shapes
+- [ ] Tool definition matches docs/tools.md + docs/output-shapes.md
 - [ ] Zod-Schema für Input
 - [ ] Strukturierter Error-Typ bei Fehlerpfaden
 - [ ] Unit-Test vorhanden

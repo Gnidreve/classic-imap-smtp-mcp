@@ -10,7 +10,7 @@ If you are a human trying to understand the project, read [`README.md`](README.m
 
 ## TL;DR — what you must know before touching anything
 
-1. **Top-down, declarative.** [`README.md`](README.md) is the contract for tool inputs, CLI flags, and config; [`output-shapes.md`](docs/output-shapes.md) is the contract for tool outputs. These three are binding.
+1. **Top-down, declarative.** [`README.md`](README.md) is the entry point and index. [`docs/tools.md`](docs/tools.md) defines the tool catalog, [`docs/config.md`](docs/config.md) defines CLI flags and config, and [`docs/output-shapes.md`](docs/output-shapes.md) defines output structures.
 2. **Scope discipline.** If a feature isn't in the README, it doesn't belong in the project. Never add Calendar, AI triage, reminders, or schedulers — no matter how good the idea seems.
 3. **Tests are mandatory.** Every tool PR needs a unit test + (where feasible) integration test against a local Dovecot/Mailpit.
 
@@ -210,7 +210,7 @@ CI runs `typecheck`, `lint`, `test`, `build` on every PR. Integration tests run 
 
 Before proposing a PR:
 
-- [ ] Tool definition matches the schema defined in `README.md` 1:1
+- [ ] Tool definition matches the schema defined in `docs/tools.md` / `README.md` 1:1
 - [ ] Own file per tool, correct layer
 - [ ] Zod schema for input
 - [ ] Structured error type for error paths
@@ -250,12 +250,16 @@ Before proposing a PR:
 
 | File | Status | What it is |
 |---|---|---|
-| `README.md` | ✅ | Human-facing docs, tool contract |
+| `README.md` | ✅ | Entry point and documentation index |
 | `AGENTS.md` (this file) | ✅ | Coding agent guidelines |
 | `docs/llms.txt` | ✅ | LLM consumer docs (install/setup/tools, machine-optimized) |
 | `docs/output-shapes.md` | ✅ | Binding output structure for every tool |
 | `docs/CONTRIBUTING.md` | ✅ | Human contributor workflow |
 | `docs/SECURITY.md` | ✅ | Vulnerability reporting |
+| `docs/install.md` | ✅ | Installation and setup guide |
+| `docs/tools.md` | ✅ | Full tool catalog |
+| `docs/config.md` | ✅ | Configuration, CLI flags, security |
+| `docs/clients.md` | ✅ | Client config snippets |
 | `CHANGELOG.md` | ✅ | Release notes (Keep a Changelog format) |
 | `docs/clients.md` | ✅ | Client config snippets (Cursor, Windsurf, VS Code, …) |
 | `docs/provider-matrix.md` | 🔜 | Provider smoke test results |
