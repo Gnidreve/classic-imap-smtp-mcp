@@ -10,7 +10,7 @@ If you are a human trying to understand the project, read [`README.md`](README.m
 
 ## TL;DR — what you must know before touching anything
 
-1. **Top-down, declarative.** [`README.md`](README.md) is the contract for tool inputs, CLI flags, and config; [`output-shapes.md`](output-shapes.md) is the contract for tool outputs; [`tools-checklist.md`](tools-checklist.md) is the authoritative list of which tools exist. These three are binding.
+1. **Top-down, declarative.** [`README.md`](README.md) is the contract for tool inputs, CLI flags, and config; [`output-shapes.md`](output-shapes.md) is the contract for tool outputs; [`output-shapes.md`](output-shapes.md) defines the binding output structures. These three are binding.
 2. **Scope discipline.** If a feature isn't in the README, it doesn't belong in the project. Never add Calendar, AI triage, reminders, or schedulers — no matter how good the idea seems.
 3. **Tests are mandatory.** Every tool PR needs a unit test + (where feasible) integration test against a local Dovecot/Mailpit.
 
@@ -138,7 +138,7 @@ function matchesAny(name: string, patterns: string[]): boolean {
 
 **Fail-fast:** If `--no-imap` **and** `--no-smtp` are both set, the server aborts at startup with a stderr message and exit code ≠ 0 — this is almost certainly a config mistake.
 
-The `READONLY_TOOLS` and `DELETE_TOOLS` constants are hardcoded and match `tools-checklist.md` 1:1.
+The `READONLY_TOOLS` and `DELETE_TOOLS` constants are hardcoded.
 
 ---
 
@@ -240,7 +240,7 @@ Before proposing a PR:
 
 - Tool inputs/behavior unclear? → README is the contract.
 - Tool output structure unclear? → `output-shapes.md` is the contract.
-- Which tools exist? → `tools-checklist.md`.
+- Which tools exist? → List all registered tools via `tools/list` in the MCP protocol.
 - Architecture question unclear? → This file.
 - Design decision open? → Ask the user, never guess.
 
@@ -253,7 +253,6 @@ Before proposing a PR:
 | `README.md` | ✅ | Human-facing docs, tool contract |
 | `AGENTS.md` (this file) | ✅ | Coding agent guidelines |
 | `llms.txt` | ✅ | LLM consumer docs (install/setup/tools, machine-optimized) |
-| `tools-checklist.md` | ✅ | Checkbox implementation list for all 36 tools |
 | `output-shapes.md` | ✅ | Binding output structure for every tool |
 | `CONTRIBUTING.md` | ✅ | Human contributor workflow |
 | `SECURITY.md` | ✅ | Vulnerability reporting |

@@ -152,7 +152,7 @@ classic-imap-smtp-mcp registriert je nach Modus und Toggles zwischen 16 (`--read
 | `meta_health` | IMAP + SMTP Erreichbarkeit, Latenz, Capabilities |
 | `meta_server_info` | Aktive Tools, aktiver Modus, Version |
 
-**Gesamt: 36 Tools.** Für jeden bietet `classic-imap-smtp-mcp --help` und die JSON-Schemas im MCP-Inspector vollständige Param-Doku. Die Rückgabe-Struktur jedes Tools ist in [`output-shapes.md`](output-shapes.md) festgelegt, die abhakbare Implementierungs-Liste in [`tools-checklist.md`](tools-checklist.md).
+**Gesamt: 36 Tools.** Für jeden bietet `classic-imap-smtp-mcp --help` und die JSON-Schemas im MCP-Inspector vollständige Param-Doku. Die Rückgabe-Struktur jedes Tools ist in [`output-shapes.md`](output-shapes.md) festgelegt.
 
 ## Konfiguration
 
@@ -325,7 +325,6 @@ Wenn du an classic-imap-smtp-mcp **mit** einem AI-Assistenten arbeitest, lade `A
 | `README.md` (diese Datei) | Menschen | Übersicht, Install, Tool-Katalog, Config |
 | [`llms.txt`](llms.txt) | Konsumierende LLMs | Maschinenoptimierte Install-/Setup-/Tool-Doku |
 | [`AGENTS.md`](AGENTS.md) | Coding-Agents (Claude Code, Cursor, Codex) | Architektur, Konventionen, Build, Vorgaben |
-| [`tools-checklist.md`](tools-checklist.md) | Implementierer | Abhakbare Liste aller 36 Tools mit Status, RFC-Refs, Definition of Done |
 | [`output-shapes.md`](output-shapes.md) | Implementierer | Verbindliche Output-Struktur jedes Tools |
 | `CONTRIBUTING.md` | Contributors | Dev-Workflow, Branching, PR-Regeln |
 | `SECURITY.md` | Security-Reporter | Vulnerability-Reporting |
