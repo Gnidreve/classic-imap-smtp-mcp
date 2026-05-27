@@ -2,8 +2,8 @@
 
 > Ein vollständiger IMAP/SMTP-MCP-Server für AI-Assistenten. Alles, was ein guter Mailclient kann — und nichts darüber hinaus.
 
-[![npm version](https://img.shields.io/npm/v/classic-imap-smtp-mcp.svg?style=flat-square)](https://www.npmjs.com/package/classic-imap-smtp-mcp)
-[![npm downloads](https://img.shields.io/npm/dm/classic-imap-smtp-mcp.svg?style=flat-square)](https://www.npmjs.com/package/classic-imap-smtp-mcp)
+[![npm version](https://img.shields.io/npm/v/@gnidreve/classic-imap-smtp-mcp.svg?style=flat-square)](https://www.npmjs.com/package/@gnidreve/classic-imap-smtp-mcp)
+[![npm downloads](https://img.shields.io/npm/dm/@gnidreve/classic-imap-smtp-mcp.svg?style=flat-square)](https://www.npmjs.com/package/@gnidreve/classic-imap-smtp-mcp)
 [![CI](https://img.shields.io/github/actions/workflow/status/Gnidreve/classic-imap-smtp-mcp/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Gnidreve/classic-imap-smtp-mcp/actions)
 
 ---
