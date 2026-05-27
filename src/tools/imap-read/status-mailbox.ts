@@ -29,8 +29,8 @@ export default defineTool({
         messages: status.messages ?? 0,
         unseen: status.unseen ?? 0,
         recent: status.recent ?? 0,
-        ...(status.uidNext !== undefined ? { uidNext: status.uidNext } : {}),
-        ...(status.uidValidity !== undefined ? { uidValidity: status.uidValidity } : {}),
+        ...(status.uidNext !== undefined ? { uidNext: Number(status.uidNext) } : {}),
+        ...(status.uidValidity !== undefined ? { uidValidity: Number(status.uidValidity) } : {}),
       };
     } catch (err) {
       throw new MailboxNotFoundError(input.mailbox);

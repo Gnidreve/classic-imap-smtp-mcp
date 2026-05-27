@@ -38,11 +38,15 @@ export default defineTool({
     const mb = await imapClient.mailboxOpen(input.originalMailbox);
     if (!mb) throw new MailboxNotFoundError(input.originalMailbox);
 
-    const original = await imapClient.fetchOne(input.originalUid, {
-      uid: true,
-      envelope: true,
-      headers: true,
-    });
+    const original = await imapClient.fetchOne(
+      input.originalUid,
+      {
+        uid: true,
+        envelope: true,
+        headers: true,
+      },
+      { uid: true },
+    );
     if (!original) throw new UidNotFoundError(input.originalUid, input.originalMailbox);
 
     const enc = original.envelope;

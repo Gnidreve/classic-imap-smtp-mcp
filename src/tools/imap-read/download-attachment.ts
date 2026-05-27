@@ -27,11 +27,15 @@ export default defineTool({
     if (!mb) throw new MailboxNotFoundError(input.mailbox);
 
     // FETCH specific body part + bodyStructure for metadata
-    const msg = await client.fetchOne(input.uid, {
-      uid: true,
-      bodyParts: [input.partId],
-      bodyStructure: true,
-    });
+    const msg = await client.fetchOne(
+      input.uid,
+      {
+        uid: true,
+        bodyParts: [input.partId],
+        bodyStructure: true,
+      },
+      { uid: true },
+    );
 
     if (!msg) throw new UidNotFoundError(input.uid, input.mailbox);
 

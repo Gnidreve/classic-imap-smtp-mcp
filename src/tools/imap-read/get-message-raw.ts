@@ -19,10 +19,14 @@ export default defineTool({
     const mailbox = await client.mailboxOpen(input.mailbox);
     if (!mailbox) throw new MailboxNotFoundError(input.mailbox);
 
-    const msg = await client.fetchOne(input.uid, {
-      uid: true,
-      source: true,
-    });
+    const msg = await client.fetchOne(
+      input.uid,
+      {
+        uid: true,
+        source: true,
+      },
+      { uid: true },
+    );
 
     if (!msg) throw new UidNotFoundError(input.uid, input.mailbox);
 

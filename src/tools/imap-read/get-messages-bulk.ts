@@ -40,13 +40,17 @@ export default defineTool({
     const notFound: number[] = [];
     const uidSet = new Set(input.uids);
 
-    for await (const msg of client.fetch(input.uids, {
-      uid: true,
-      envelope: true,
-      flags: true,
-      size: true,
-      source: true,
-    })) {
+    for await (const msg of client.fetch(
+      input.uids,
+      {
+        uid: true,
+        envelope: true,
+        flags: true,
+        size: true,
+        source: true,
+      },
+      { uid: true },
+    )) {
       uidSet.delete(msg.uid);
       const raw = msg.source?.toString() ?? "";
       let parsed: ParsedMessage;
