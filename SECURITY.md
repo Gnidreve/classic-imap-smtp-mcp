@@ -1,9 +1,11 @@
 # Security Policy
 
 ## Reporting
-Sicherheitsluecken bitte **nicht** als oeffentliches Issue, sondern via GitHub Security Advisory (oder Kontakt im Repo). Wir reagieren so schnell wie moeglich.
 
-## Hinweise
-- Credentials liegen im Klartext in der Config-Datei (Permission 0600 wird geprueft). Empfehlung: App-Passwords.
-- Alle Verbindungen via TLS (implicit oder STARTTLS). `verify_tls=false` nur fuer vertrauenswuerdige interne Server.
-- Credentials werden niemals geloggt (Sanitizer).
+Please do **not** report security vulnerabilities as public issues. Use GitHub Security Advisory (or contact details in the repo). We will respond as quickly as possible.
+
+## Notes
+
+- Credentials are stored in plain text in the config file (permission 0600 is enforced). Recommendation: use app passwords.
+- All connections use TLS (implicit or STARTTLS). `verify_tls=false` is intended for trusted internal servers only.
+- Credentials are never logged (sanitizer enforced).

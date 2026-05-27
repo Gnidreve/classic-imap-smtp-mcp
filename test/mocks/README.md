@@ -1,3 +1,3 @@
 # Mocks
 
-IMAP/SMTP-Connection-Mocks fuer Unit-Tests. PHASE 3: imapflow- und nodemailer-Doubles hier ablegen.
+IMAP/SMTP connection mocks for unit tests. TODO: place imapflow and nodemailer doubles here.

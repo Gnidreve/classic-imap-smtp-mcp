@@ -1,5 +1,5 @@
-# Client-Konfigurations-Snippets
+# Client Configuration Snippets
 
-Konkrete mcp-Config-Snippets fuer Claude Desktop, Claude Code, Cursor, Windsurf und VS Code stehen in `README.md` und `llms.txt`. Diese Datei sammelt darueber hinausgehende Edge-Cases.
+Concrete MCP config snippets for Claude Desktop, Claude Code, Cursor, Windsurf, and VS Code are in `README.md` and `llms.txt`. This file collects edge cases beyond those.
 
-PHASE 2/5: ergaenzen, sobald reale Client-Versionen getestet sind.
+TODO: add as real client versions are tested.

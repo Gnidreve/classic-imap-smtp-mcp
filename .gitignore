@@ -6,3 +6,7 @@ coverage/
 .env.local
 .DS_Store
 tmp/
+
+# Internal planning docs (not public)
+phases.md
+phase-*.md

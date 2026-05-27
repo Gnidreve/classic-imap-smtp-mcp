@@ -1,124 +1,117 @@
 # AGENTS.md
 
-**Zielgruppe:** Coding-Agents (Claude Code, Cursor, Codex, etc.), die aktiv am `classic-imap-smtp-mcp`-Repo arbeiten.
+**Audience:** Coding agents (Claude Code, Cursor, Codex, etc.) actively working on the `classic-imap-smtp-mcp` repository.
 
-Wenn du ein *konsumierender* LLM bist, der den Server bei einem End-Nutzer installieren oder benutzen soll, lies stattdessen [`llms.txt`](llms.txt).
+If you are a *consuming* LLM tasked with installing or using this server for an end user, read [`llms.txt`](llms.txt) instead.
 
-Wenn du ein Mensch bist, der das Projekt verstehen will, lies [`README.md`](README.md).
-
----
-
-## TL;DR — was du wissen musst, bevor du anfasst
-
-1. Dieses Projekt folgt einem **Phasen-Modell**. Status in [`phases.md`](phases.md). **Springe nicht über Phasen.** Wenn du in Phase 2 bist, sind die Entscheidungen aus Phase 1 unverhandelbar.
-2. **Top-down, declarativ.** Die [`README.md`](README.md) ist der Vertrag für Tool-Inputs, CLI-Flags und Config; [`output-shapes.md`](output-shapes.md) der Vertrag für Tool-Outputs; [`tools-checklist.md`](tools-checklist.md) die maßgebliche Liste, welche Tools existieren. Diese drei sind verbindlich.
-3. **Scope-Disziplin.** Wenn ein Feature nicht in der README steht, gehört es nicht ins Projekt. Niemals Calendar, AI-Triage, Reminders, Scheduler einbauen — egal wie gut die Idee scheint. Begründung in [`phase-0-marktanalyse.md`](phase-0-marktanalyse.md).
-4. **Keine Eigeninitiative bei offenen Phase-1-Fragen.** Wenn du in [`phase-1-fragerunde.md`](phase-1-fragerunde.md) ein `Entscheidung: _offen_` siehst, **frag den User**, treffe keine Annahme.
-5. **Tests sind Pflicht.** Jeder Tool-PR braucht Unit-Test + (wo möglich) Integration-Test gegen lokalen Dovecot/Mailpit.
+If you are a human trying to understand the project, read [`README.md`](README.md).
 
 ---
 
-## Projekt-Identität (fix)
+## TL;DR — what you must know before touching anything
 
-- **Name:** `classic-imap-smtp-mcp` (final, Phase 1 Cluster B1)
-- **Sprache:** TypeScript (final, Phase 1 Cluster A1)
+1. **Top-down, declarative.** [`README.md`](README.md) is the contract for tool inputs, CLI flags, and config; [`output-shapes.md`](output-shapes.md) is the contract for tool outputs; [`tools-checklist.md`](tools-checklist.md) is the authoritative list of which tools exist. These three are binding.
+2. **Scope discipline.** If a feature isn't in the README, it doesn't belong in the project. Never add Calendar, AI triage, reminders, or schedulers — no matter how good the idea seems.
+3. **Tests are mandatory.** Every tool PR needs a unit test + (where feasible) integration test against a local Dovecot/Mailpit.
+
+---
+
+## Project Identity (fixed)
+
+- **Name:** `classic-imap-smtp-mcp` (final)
+- **Language:** TypeScript (final)
 - **Runtime:** Node ≥ 20 (LTS)
-- **Distribution:** npm-Package mit `bin`-Entry, ausführbar via `npx @gnidreve/classic-imap-smtp-mcp`
-- **Transport:** stdio only — kein HTTP/SSE, kein Webserver
-- **Lizenz:** TBD (wird vor v1.0-Release final festgelegt; bis dahin im Repo als `LICENSE: TBD`, kein npm-Publish)
+- **Distribution:** npm package with `bin` entry, executable via `npx @gnidreve/classic-imap-smtp-mcp`
+- **Transport:** stdio only — no HTTP/SSE, no web server
+- **License:** MIT
 
 ---
 
-## Architektur-Vorgaben
+## Architecture
 
-### Schichten (top → bottom)
+### Layers (top → bottom)
 
 ```
 src/
 ├── bin/
-│   └── main.ts             # CLI-Entry, Argv-Parsing, Boot (Command-Name: classic-imap-smtp-mcp)
+│   └── main.ts             # CLI entry, arg parsing, boot (command name: classic-imap-smtp-mcp)
 ├── server/
-│   ├── server.ts           # MCP-Server-Aufbau, Tool-Registrierung (konditional!)
-│   ├── registry.ts         # 3-Stufen-Kaskade: Feature-Flags → Allow → Deny
-│   └── logging.ts          # stderr-Logger, niemals stdout (stdout = MCP-Protokoll)
+│   ├── server.ts           # MCP server setup, conditional tool registration
+│   ├── registry.ts         # 3-stage cascade: feature flags → allow → deny
+│   └── logging.ts          # stderr logger, never stdout (stdout = MCP protocol)
 ├── config/
-│   ├── schema.ts           # Zod-Schemas für Config-File und Env-Vars
-│   ├── loader.ts           # TOML laden, Env-Vars mergen, validieren
-│   ├── xdg.ts              # XDG-Pfade plattformübergreifend
-│   └── providers.ts        # Provider-Auto-Detection (Gmail, Outlook, ...)
+│   ├── schema.ts           # Zod schemas for config file and env vars
+│   ├── loader.ts           # TOML loading, env var merge, validation
+│   ├── xdg.ts              # Cross-platform XDG paths
+│   └── providers.ts        # Provider auto-detection (Gmail, Outlook, IONOS, …)
 ├── connections/
-│   ├── imap-pool.ts        # Imapflow-Wrapper, Reconnect, Lifecycle
-│   └── smtp-pool.ts        # Nodemailer-Transport, Pooling
+│   ├── imap-pool.ts        # Imapflow wrapper, reconnect, lifecycle
+│   └── smtp-pool.ts        # Nodemailer transport, pooling
 ├── tools/
-│   ├── _types.ts           # Gemeinsame Typen, Tool-Definition-Interface
-│   ├── imap-read/          # 12 Tools, je eine Datei
-│   ├── imap-write/         # 8 Tools
-│   ├── imap-mailbox/       # 5 Tools (Folder-CRUD)
-│   ├── smtp/               # 5 Tools
-│   ├── account/            # 4 Tools (Account-Management)
-│   └── meta/               # 2 Tools (Server-Introspektion)
+│   ├── _types.ts           # Shared types, tool definition interface
+│   ├── imap-read/          # 12 tools, one file each
+│   ├── imap-write/         # 8 tools
+│   ├── imap-mailbox/       # 5 tools (folder CRUD)
+│   ├── smtp/               # 5 tools
+│   ├── account/            # 4 tools (account management)
+│   └── meta/               # 2 tools (server introspection)
 ├── lib/
-│   ├── mime.ts             # mailparser-Wrapper, Attachment-Dekodierung
-│   ├── search-builder.ts   # IMAP-SEARCH-Kriterien → imapflow-Query
-│   ├── threading.ts        # In-Reply-To/References-Walk
-│   └── errors.ts           # Strukturierte Error-Typen
-└── index.ts                # Library-Export (optional, für Tests)
+│   ├── mime.ts             # mailparser wrapper, attachment decoding
+│   ├── search-builder.ts   # IMAP SEARCH criteria → imapflow query
+│   ├── threading.ts        # In-Reply-To / References walk
+│   └── errors.ts           # Structured error types
+└── index.ts                # Library export (optional, for tests)
 ```
 
-### Regeln pro Schicht
+### Layer rules
 
-- **`bin/` und `server/`** dürfen alles importieren.
-- **`tools/`** dürfen `connections/`, `lib/`, `config/`, `_types.ts` importieren — niemals `server/`.
-- **`connections/`** dürfen `lib/` und `config/` importieren.
-- **`config/`** und **`lib/`** sind leaf-Module — keine Cross-Imports zwischen ihnen, außer Typen.
-- Jedes Tool ist eine eigene Datei mit Default-Export einer `ToolDefinition`. Eine Datei = ein Tool. Keine Sammelmodule.
+- **`bin/` and `server/`** may import anything.
+- **`tools/`** may import `connections/`, `lib/`, `config/`, `_types.ts` — never `server/`.
+- **`connections/`** may import `lib/` and `config/`.
+- **`config/`** and **`lib/`** are leaf modules — no cross-imports between them except types.
+- Each tool is its own file with a default export of a `ToolDefinition`. One file = one tool. No barrel modules.
 
-### Tool-Definition-Interface
-
-Jedes Tool exportiert dieselbe Form:
+### Tool Definition Interface
 
 ```ts
 // src/tools/_types.ts
 export interface ToolDefinition<TInput = unknown, TOutput = unknown> {
-  name: string;                          // z.B. "imap_list_mailboxes"
-  description: string;                   // für MCP tools/list
+  name: string;                          // e.g. "imap_list_mailboxes"
+  description: string;                   // for MCP tools/list
   category: ToolCategory;                // imap-read | imap-write | imap-mailbox | smtp | account | meta
   inputSchema: ZodType<TInput>;
-  outputShape?: ZodType<TOutput>;        // optional, für Inspektion
+  outputShape?: ZodType<TOutput>;        // optional, for inspection
   handler: (input: TInput, ctx: ToolContext) => Promise<TOutput>;
 }
 ```
 
-`ToolContext` enthält den geladenen Config, den Account-Resolver und die Connection-Pools — niemals Globals.
+`ToolContext` holds the loaded config, account resolver, and connection pools — never globals.
 
-### Konditionale Tool-Registrierung — 3-Stufen-Kaskade
+### Conditional Tool Registration — 3-Stage Cascade
 
-`src/server/registry.ts` ist der einzige Ort, der entscheidet, welche Tools beim Start registriert werden. Die Kaskade läuft von grob nach fein; **je feiner die Stufe, desto höher die Priorität.**
+`src/server/registry.ts` is the single place that decides which tools are registered at startup. The cascade runs coarse-to-fine; **the finer the stage, the higher the priority.**
 
-1. **Feature-Flags (grob):** `--safe`, `--readonly`, `--no-imap`, `--no-smtp` bilden die Basis-Menge.
-2. **`--allow-tools` (mittel):** überschreibt die Feature-Flags — holt Tools explizit zurück, die eine grobe Geste weggeschaltet hat. Ohne Feature-Flags wirkt es als Whitelist (grenzt ein).
-3. **`--deny-tools` (fein):** gewinnt über alles, auch über Allow.
+1. **Feature flags (coarse):** `--safe`, `--readonly`, `--no-imap`, `--no-smtp` define the base set.
+2. **`--allow-tools` (medium):** overrides feature flags — explicitly brings tools back that a coarse gesture disabled. Without feature flags it acts as a whitelist.
+3. **`--deny-tools` (fine):** wins over everything, including allow.
 
-Allow und Deny unterstützen **Präfix-Wildcards** (`imap_*`, `account_*`, `imap_delete_*`, …).
+Allow and deny support **prefix wildcards** (`imap_*`, `account_*`, `imap_delete_*`, …).
 
 ```ts
 function resolveActiveTools(all: ToolDefinition[], opts: ResolvedOptions): ToolDefinition[] {
-  // Stufe 1: grobe Basis-Menge aus Feature-Flags
+  // Stage 1: coarse base set from feature flags
   let active = new Set(
     all.filter((t) => passesFeatureFlags(t, opts)).map((t) => t.name),
   );
 
-  // Stufe 2: Allow überschreibt Feature-Flags (b-Logik — kann aufweiten)
+  // Stage 2: Allow overrides feature flags (can widen)
   if (opts.allowTools?.length) {
     for (const tool of all) {
       if (matchesAny(tool.name, opts.allowTools)) active.add(tool.name);
     }
-    // Bei gesetztem Allow zusätzlich auf die Allow-Menge eingrenzen,
-    // sofern keine Feature-Flags die Basis schon definiert haben:
-    // (Detail-Semantik in phase-1-fragerunde.md, Cluster D)
   }
 
-  // Stufe 3: Deny gewinnt über alles
+  // Stage 3: Deny wins over everything
   if (opts.denyTools?.length) {
     for (const name of [...active]) {
       if (matchesAny(name, opts.denyTools)) active.delete(name);
@@ -131,12 +124,11 @@ function resolveActiveTools(all: ToolDefinition[], opts: ResolvedOptions): ToolD
 function passesFeatureFlags(t: ToolDefinition, opts: ResolvedOptions): boolean {
   if (opts.noImap && t.category.startsWith("imap")) return false;
   if (opts.noSmtp && t.category === "smtp") return false;
-  if (opts.readonly && !READONLY_TOOLS.has(t.name)) return false; // nur Lese-Tools + meta + smtp_verify
-  if (opts.safe && DELETE_TOOLS.has(t.name)) return false;        // delete/expunge/delete-mailbox weg
+  if (opts.readonly && !READONLY_TOOLS.has(t.name)) return false;
+  if (opts.safe && DELETE_TOOLS.has(t.name)) return false;
   return true;
 }
 
-// matchesAny unterstützt Präfix-Wildcards: "imap_*" matcht "imap_search" etc.
 function matchesAny(name: string, patterns: string[]): boolean {
   return patterns.some((p) =>
     p.endsWith("*") ? name.startsWith(p.slice(0, -1)) : name === p,
@@ -144,139 +136,130 @@ function matchesAny(name: string, patterns: string[]): boolean {
 }
 ```
 
-**Fail-fast:** Wenn `--no-imap` **und** `--no-smtp` gleichzeitig gesetzt sind, bricht der Server beim Start mit einer stderr-Meldung und Exit-Code ≠ 0 ab (siehe `bin/`-Schicht) — das ist fast sicher ein Konfig-Versehen, und die LLM bekäme den Zustand sonst nicht zuverlässig gemeldet.
+**Fail-fast:** If `--no-imap` **and** `--no-smtp` are both set, the server aborts at startup with a stderr message and exit code ≠ 0 — this is almost certainly a config mistake.
 
-Die `READONLY_TOOLS`- und `DELETE_TOOLS`-Konstanten sind hartkodiert und decken sich 1:1 mit `tools-checklist.md`.
+The `READONLY_TOOLS` and `DELETE_TOOLS` constants are hardcoded and match `tools-checklist.md` 1:1.
 
 ---
 
-## Code-Konventionen
+## Code Conventions
 
-- **TypeScript strict.** `tsconfig` mit `strict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`.
-- **Keine `any`.** `unknown` + Zod-Validierung.
-- **Async/await, kein `.then`-Chaining** außer bei einer dokumentierten Performance-Begründung.
-- **Errors:** strukturierte Klassen in `lib/errors.ts`. Niemals einen rohen `Error` werfen — immer ein konkreter Subtyp. Jede Error-Klasse trägt einen festen `code`-String (den der Client sieht). Verbindliches Mapping:
+- **TypeScript strict.** `tsconfig` with `strict: true`, `noUncheckedIndexedAccess: true`, `exactOptionalPropertyTypes: true`.
+- **No `any`.** Use `unknown` + Zod validation.
+- **Async/await, no `.then` chaining** unless there's a documented performance reason.
+- **Errors:** structured classes in `lib/errors.ts`. Never throw a raw `Error` — always a concrete subtype. Each error class carries a fixed `code` string (visible to the client). Binding mapping:
 
-| Error-Klasse | `code` (Client-sichtbar) | Wann |
+| Error Class | `code` (client-visible) | When |
 |---|---|---|
-| `AuthError` | `AUTH_FAILED` | Login IMAP oder SMTP fehlgeschlagen |
-| `MailboxNotFoundError` | `MAILBOX_NOT_FOUND` | Folder existiert nicht |
-| `UidNotFoundError` | `UID_NOT_FOUND` | Message-UID existiert nicht im Folder |
-| `AttachmentNotFoundError` | `ATTACHMENT_NOT_FOUND` | Part-ID/Filename nicht in der Message |
-| `AccountNotFoundError` | `ACCOUNT_NOT_FOUND` | `account`-Parameter zeigt auf nicht-konfigurierten Account |
-| `RateLimitError` | `RATE_LIMITED` | Token-Bucket erschöpft |
-| `TlsError` | `TLS_ERROR` | Zertifikats-/TLS-Handshake-Problem |
-| `ConfigError` | `CONFIG_ERROR` | Config fehlt/ungültig, oder Account-Mutation ohne Config-File |
-| `PermissionError` | `PERMISSION_DENIED` | Config-File-Permissions zu offen, oder Tool im aktiven Modus nicht erlaubt |
-| `ImapProtocolError` | `IMAP_PROTOCOL_ERROR` | Sonstiger IMAP-Server-Fehler (mit `imap_response`-Detail) |
-| `SmtpRelayError` | `SMTP_RELAY_ERROR` | SMTP-Relay/Versand abgelehnt |
+| `AuthError` | `AUTH_FAILED` | IMAP or SMTP login failed |
+| `MailboxNotFoundError` | `MAILBOX_NOT_FOUND` | Folder does not exist |
+| `UidNotFoundError` | `UID_NOT_FOUND` | Message UID does not exist in folder |
+| `AttachmentNotFoundError` | `ATTACHMENT_NOT_FOUND` | Part ID / filename not found in message |
+| `AccountNotFoundError` | `ACCOUNT_NOT_FOUND` | `account` parameter refers to unconfigured account |
+| `RateLimitError` | `RATE_LIMITED` | Token bucket exhausted |
+| `TlsError` | `TLS_ERROR` | Certificate / TLS handshake problem |
+| `ConfigError` | `CONFIG_ERROR` | Config missing / invalid, or account mutation without config file |
+| `PermissionError` | `PERMISSION_DENIED` | Config file permissions too open, or tool not allowed in active mode |
+| `ImapProtocolError` | `IMAP_PROTOCOL_ERROR` | Other IMAP server error (with `imap_response` detail) |
+| `SmtpRelayError` | `SMTP_RELAY_ERROR` | SMTP relay / delivery rejected |
 
-Diese Liste ist die Single Source of Truth für Error-Codes. README und llms.txt referenzieren sie, duplizieren sie nicht.
-- **Logging:** ausschließlich über `server/logging.ts` → stderr. **Niemals `console.log`**, das würde das MCP-Protokoll auf stdout zerstören.
-- **Keine globalen Variablen.** Alles via Dependency Injection durch `ToolContext`.
+This list is the single source of truth for error codes. README and llms.txt reference it but do not duplicate it.
+- **Logging:** exclusively via `server/logging.ts` → stderr. **Never `console.log`**, as that would corrupt the MCP protocol on stdout.
+- **No global variables.** Everything via dependency injection through `ToolContext`.
 
 ---
 
 ## Build & Run
 
 ```bash
-pnpm install               # Erstinstallation
+pnpm install               # First-time setup
 pnpm typecheck             # tsc --noEmit
-pnpm lint                  # Biome oder ESLint
-pnpm test                  # Vitest, unit-tests
-pnpm test:integration      # Integration gegen lokales Dovecot + Mailpit (Docker)
+pnpm lint                  # Biome
+pnpm test                  # Vitest, unit tests
+pnpm test:integration      # Integration against local Dovecot + Mailpit (Docker)
 pnpm build                 # tsup → dist/
-pnpm start                 # Lokales Ausführen via tsx
-node dist/bin/main.js      # Production-Build ausführen
+pnpm start                 # Local run via tsx
+node dist/bin/main.js      # Run production build
 ```
 
-CI führt `typecheck`, `lint`, `test`, `build` bei jedem PR aus. Integration-Tests laufen nightly + auf `main`.
+CI runs `typecheck`, `lint`, `test`, `build` on every PR. Integration tests run nightly + on `main`.
 
 ---
 
 ## Tests
 
-### Unit-Tests
-- Jedes Tool hat eine `*.test.ts` direkt daneben.
-- IMAP-/SMTP-Connections werden gemockt (siehe `test/mocks/`).
-- Coverage-Ziel: ≥ 85 % für `tools/`, ≥ 70 % gesamt.
+### Unit Tests
+- Each tool has a `*.test.ts` file right next to it.
+- IMAP/SMTP connections are mocked (see `test/mocks/`).
+- Coverage target: ≥ 85 % for `tools/`, ≥ 70 % overall.
 
-### Integration-Tests
-- Verzeichnis `test/integration/`.
-- `docker-compose.test.yml` startet:
-  - **Dovecot** (IMAP) mit zwei Test-Accounts + initialer Mailbox-Struktur (INBOX, Sent, Drafts, Archive, Custom-Folder)
-  - **Mailpit** (SMTP) als Sender + Inspektor
-- Tests gegen echten IMAP-Server prüfen: SEARCH-Operatoren, FETCH-Parts, MOVE/COPY-Semantik, APPEND, Flag-STORE, Folder-CRUD. (Kein IDLE — nicht in v1, siehe Roadmap.)
+### Integration Tests
+- Directory `test/integration/`.
+- `docker-compose.test.yml` starts:
+  - **Dovecot** (IMAP) with two test accounts + initial mailbox structure (INBOX, Sent, Drafts, Archive, custom folder)
+  - **Mailpit** (SMTP) as sender + inspector
+- Tests against a real IMAP server verify: SEARCH operators, FETCH parts, MOVE/COPY semantics, APPEND, flag STORE, folder CRUD.
 
-### Provider-Smoke-Tests (manuell, Phase 4)
-- Test-Matrix gegen Gmail, Outlook, iCloud, mailbox.org, Posteo, GMX, web.de, ProtonMail-Bridge.
-- Ergebnisse in `docs/provider-matrix.md` dokumentieren.
-
----
-
-## PR-Checkliste
-
-Bevor du einen PR vorschlägst:
-
-- [ ] Tool-Definition entspricht 1:1 dem in `README.md` definierten Schema
-- [ ] Eigene Datei pro Tool, korrekte Schicht
-- [ ] Zod-Schema für Input
-- [ ] Strukturierter Error-Typ bei Fehlerpfaden
-- [ ] Unit-Test vorhanden
-- [ ] Integration-Test, wo das Tool gegen echtes IMAP/SMTP läuft
-- [ ] `pnpm typecheck && pnpm lint && pnpm test` grün
-- [ ] README aktualisiert, *falls* sich Tool-Verhalten ändert
-- [ ] Kein Logging auf stdout
-- [ ] Keine neuen Dependencies ohne Begründung im PR-Beschrieb
+### Provider Smoke Tests (manual)
+- Test matrix against Gmail, Outlook, iCloud, mailbox.org, Posteo, GMX, web.de, ProtonMail Bridge.
+- Results documented in `docs/provider-matrix.md`.
 
 ---
 
-## Was du **niemals** tun darfst
+## PR Checklist
 
-1. **Stdout für irgendwas außer dem MCP-Protokoll benutzen.** Selbst ein `console.log("hello")` während des Tool-Loadings zerstört die Client-Verbindung.
-2. **Globale Singletons einführen.** Connection-Pools, Config — alles via Context.
-3. **Features in den Server einbauen, die nicht in der README stehen.** AI-Heuristiken, Auto-Categorization, Scheduling, Calendar, Notifications. Niemals. Siehe `phase-0-marktanalyse.md`.
-4. **OAuth2 / XOAUTH2 implementieren.** Auch nicht "experimentell", auch nicht "vorbereitend". Dieser MCP ist klassisches IMAP/SMTP — User/Pass + App-Password + STARTTLS/SSL. Punkt. Permanent.
-5. **Credentials irgendwo loggen, auch nicht im Debug-Level.** Sanitizer in `logging.ts` zwingt `pass`, `password`, `token` → `***`.
-6. **`process.exit()` außerhalb der bin/-Schicht aufrufen.**
-7. **Den MCP-SDK-Typen vertrauen, ohne mit Zod nachzuvalidieren.**
-8. **Phasen-Sprünge.** Wenn `phase-1-fragerunde.md` noch offene Entscheidungen hat, kein Code schreiben.
+Before proposing a PR:
 
----
-
-## Wenn du unsicher bist
-
-- Tool-Inputs/Verhalten unklar? → README ist der Vertrag.
-- Tool-Output-Struktur unklar? → `output-shapes.md` ist der Vertrag.
-- Welche Tools existieren? → `tools-checklist.md`.
-- Architektur-Frage unklar? → Diese Datei.
-- Phasen-Status unklar? → `phases.md`.
-- Designentscheidung offen? → User fragen, niemals raten.
+- [ ] Tool definition matches the schema defined in `README.md` 1:1
+- [ ] Own file per tool, correct layer
+- [ ] Zod schema for input
+- [ ] Structured error type for error paths
+- [ ] Unit test present
+- [ ] Integration test where the tool runs against real IMAP/SMTP
+- [ ] `pnpm typecheck && pnpm lint && pnpm test` green
+- [ ] README updated *if* tool behavior changed
+- [ ] No logging to stdout
+- [ ] No new dependencies without justification in PR description
 
 ---
 
-## Datei-Übersicht im Repo
+## What you must **never** do
 
-Legende: ✅ existiert · 🔜 entsteht in genannter Phase
+1. **Use stdout for anything except the MCP protocol.** Even a single `console.log("hello")` during tool loading breaks the client connection.
+2. **Introduce global singletons.** Connection pools, config — everything via context.
+3. **Add features not listed in the README.** AI heuristics, auto-categorization, scheduling, calendar, notifications. Never.
+4. **Implement OAuth2 / XOAUTH2.** Not even "experimentally." This MCP is classic IMAP/SMTP — user/pass + app password + STARTTLS/SSL. Period. Permanent.
+5. **Log credentials anywhere, even at debug level.** Sanitizer in `logging.ts` forces `pass`, `password`, `token` → `***`.
+6. **Call `process.exit()` outside the `bin/` layer.**
+7. **Trust MCP SDK types without re-validating with Zod.**
+8. **Write code while design decisions are still open** — ask the user first.
 
-| Datei | Status | Was sie ist |
+---
+
+## When in doubt
+
+- Tool inputs/behavior unclear? → README is the contract.
+- Tool output structure unclear? → `output-shapes.md` is the contract.
+- Which tools exist? → `tools-checklist.md`.
+- Architecture question unclear? → This file.
+- Design decision open? → Ask the user, never guess.
+
+---
+
+## File Overview in Repo
+
+| File | Status | What it is |
 |---|---|---|
-| `README.md` | ✅ | Human-Facing-Doku, Tool-Vertrag |
-| `AGENTS.md` (diese Datei) | ✅ | Coding-Agent-Vorgaben |
-| `llms.txt` | ✅ | LLM-Konsumenten-Doku (Install/Setup/Tools maschinen-optimiert) |
-| `tools-checklist.md` | ✅ | Abhakbare Implementierungs-Liste aller 36 Tools |
-| `output-shapes.md` | ✅ | Verbindliche Output-Struktur jedes Tools |
-| `phases.md` | ✅ | Phasen-Tracker |
-| `phase-0-marktanalyse.md` | ✅ | Existenzgrund-Beweis |
-| `phase-1-fragerunde.md` | ✅ | Designentscheidungen Phase 1 |
-| `phase-2..5-*.md` | 🔜 ab Phase 2 | Detail-Pläne der technischen Phasen |
-| `LICENSE` | 🔜 vor Phase 5 | Lizenz (TBD, hartes Gate) |
-| `CONTRIBUTING.md` | 🔜 Phase 2 | Workflow für Menschen |
-| `SECURITY.md` | 🔜 Phase 2 | Vulnerability-Reporting |
-| `CHANGELOG.md` | 🔜 Phase 2 | Releases (Keep-a-Changelog-Format) |
-| `.env.example` | 🔜 Phase 2 | Vorlage für Single-Account-Env-Setup |
-| `config.example.toml` | 🔜 Phase 2 | Vorlage für Multi-Account-Config |
-| `docs/clients.md` | 🔜 Phase 2 | Client-Config-Snippets (Cursor, Windsurf, VS Code, …) |
-| `docs/provider-matrix.md` | 🔜 Phase 4 | Ergebnisse der Provider-Smoke-Tests |
-| `src/` | 🔜 Phase 3 | Sourcecode (siehe Architektur oben) |
-| `test/` | 🔜 Phase 3 | Tests |
+| `README.md` | ✅ | Human-facing docs, tool contract |
+| `AGENTS.md` (this file) | ✅ | Coding agent guidelines |
+| `llms.txt` | ✅ | LLM consumer docs (install/setup/tools, machine-optimized) |
+| `tools-checklist.md` | ✅ | Checkbox implementation list for all 36 tools |
+| `output-shapes.md` | ✅ | Binding output structure for every tool |
+| `CONTRIBUTING.md` | ✅ | Human contributor workflow |
+| `SECURITY.md` | ✅ | Vulnerability reporting |
+| `CHANGELOG.md` | ✅ | Release notes (Keep a Changelog format) |
+| `docs/clients.md` | ✅ | Client config snippets (Cursor, Windsurf, VS Code, …) |
+| `docs/provider-matrix.md` | 🔜 | Provider smoke test results |
+| `LICENSE` | ✅ | MIT |
+| `src/` | ✅ | Source code (see architecture above) |
+| `test/` | ✅ | Tests |

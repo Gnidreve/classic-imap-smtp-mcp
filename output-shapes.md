@@ -1,27 +1,27 @@
-# Output-Shapes — verbindliche Tool-Ausgabe-Strukturen
+# Output Shapes — binding tool output structures
 
-**Zweck:** Während `README.md` und `llms.txt` die **Inputs** jedes Tools definieren, legt diese Datei die **Outputs** fest. Sie ist Teil des Vertrags. Ein Implementierer baut die Rückgabe exakt so; Abweichungen sind ein Bug.
+**Purpose:** While `README.md` and `llms.txt` define the **inputs** for each tool, this file defines their **outputs**. It is part of the contract. Implementations must match exactly; deviations are bugs.
 
-**Konventionen:**
-- Alle Outputs sind JSON-serialisierbar.
-- Zeitstempel: ISO 8601 mit Offset (z. B. `2026-05-21T14:30:00+02:00`).
-- Adressen: immer `{ name?: string, address: string }`.
-- UIDs: `number` (IMAP UIDs sind 32-bit unsigned).
-- Flags: Array von Strings, IMAP-Notation (`\\Seen`, `\\Flagged`, Custom-Keywords ohne Backslash).
-- Fehler werden **nicht** hier modelliert — sie kommen als strukturierte Errors (`{ code, message, details? }`, siehe `AGENTS.md`).
-- Optionale Felder sind mit `?` markiert. Fehlt der Wert, wird das Feld weggelassen (nicht `null`), außer explizit anders vermerkt.
-- Binärdaten (Attachments) werden nie inline als Base64 in großen Listen zurückgegeben — nur auf explizite Anfrage über `imap_download_attachment`.
+**Conventions:**
+- All outputs are JSON-serializable.
+- Timestamps: ISO 8601 with offset (e.g. `2026-05-21T14:30:00+02:00`).
+- Addresses: always `{ name?: string, address: string }`.
+- UIDs: `number` (IMAP UIDs are 32-bit unsigned).
+- Flags: array of strings, IMAP notation (`\Seen`, `\Flagged`, custom keywords without backslash).
+- Errors are **not** modeled here — they arrive as structured errors (`{ code, message, details? }`, see `AGENTS.md`).
+- Optional fields are marked with `?`. When absent, the field is omitted (not `null`), unless explicitly noted otherwise.
+- Binary data (attachments) is never inlined as base64 in large lists — only on explicit request via `imap_download_attachment`.
 
 ---
 
-## Gemeinsame Sub-Typen
+## Common Sub-Types
 
 ```ts
 type Address = { name?: string; address: string };
 
 type MessageEnvelope = {
   uid: number;
-  seq?: number;                 // Sequence-Number, falls verfügbar
+  seq?: number;                 // Sequence number, if available
   subject: string;
   from: Address[];
   to: Address[];
@@ -42,13 +42,13 @@ type AttachmentMeta = {
   filename?: string;            // RFC-2231-dekodiert
   contentType: string;          // z. B. "application/pdf"
   size: number;                 // Bytes
-  contentId?: string;           // für inline/cid-Referenzen
+  contentId?: string;           // for inline / cid references
   disposition?: "inline" | "attachment";
 };
 
 type MailboxInfo = {
   path: string;                 // server-nativer Name, z. B. "INBOX", "[Gmail]/Sent Mail"
-  delimiter: string;            // Hierarchie-Trenner, z. B. "/" oder "."
+  delimiter: string;            // Hierarchy separator, e.g. "/" or "."
   flags: string[];              // Mailbox-Flags
   specialUse?: string;          // \\Inbox \\Sent \\Drafts \\Trash \\Junk \\Archive \\All \\Flagged
   subscribed: boolean;
@@ -93,7 +93,7 @@ type MailboxInfo = {
   envelope: MessageEnvelope;
   text?: string;            // text/plain Body, dekodiert
   html?: string;            // text/html Body, dekodiert
-  attachments: AttachmentMeta[];   // Metadaten, KEINE Binärdaten
+  attachments: AttachmentMeta[];   // Metadata, NO binary data
 }
 ```
 
@@ -101,7 +101,7 @@ type MailboxInfo = {
 ```ts
 {
   uid: number;
-  headers: Record<string, string | string[]>;  // alle Header, raw-dekodiert
+  headers: Record<string, string | string[]>;  // All headers, raw-decoded
 }
 ```
 
@@ -109,7 +109,7 @@ type MailboxInfo = {
 ```ts
 {
   uid: number;
-  rfc822: string;           // vollständige RFC-822-Quelle
+  rfc822: string;           // Complete RFC-822 source
 }
 ```
 
@@ -123,7 +123,7 @@ type MailboxInfo = {
     html?: string;
     attachments: AttachmentMeta[];
   }>;
-  notFound: number[];       // angefragte UIDs, die nicht existierten
+  notFound: number[];       // Requested UIDs that did not exist
 }
 ```
 
@@ -143,7 +143,7 @@ type MailboxInfo = {
   filename?: string;
   contentType: string;
   size: number;
-  // genau eines der beiden:
+  // Exactly one of:
   savedPath?: string;       // wenn save_path angegeben war
   base64?: string;          // wenn kein save_path — Inhalt inline
 }
@@ -155,7 +155,7 @@ type MailboxInfo = {
   rootUid: number;
   mailbox: string;
   messages: MessageEnvelope[];   // chronologisch sortiert, inkl. des angefragten
-  // Reihenfolge folgt der References/In-Reply-To-Kette, soweit auflösbar
+  // Order follows the References / In-Reply-To chain, as far as resolvable
 }
 ```
 
@@ -179,7 +179,7 @@ type MailboxInfo = {
 
 ## IMAP — Schreiben
 
-Alle Schreib-Tools geben einen einheitlichen Mutations-Report zurück:
+All write tools return a uniform mutation report:
 
 ### `imap_mark_message`
 ```ts
@@ -189,7 +189,7 @@ Alle Schreib-Tools geben einen einheitlichen Mutations-Report zurück:
 ### `imap_bulk_mark`
 ```ts
 {
-  modified: number;          // Anzahl tatsächlich geänderter Messages
+  modified: number;          // Number of actually modified messages
   uids: number[];            // betroffene UIDs
   notFound: number[];
 }
@@ -230,7 +230,7 @@ Alle Schreib-Tools geben einen einheitlichen Mutations-Report zurück:
 ```ts
 {
   mailbox: string;
-  uid?: number;              // UID der angelegten Message (UIDPLUS), falls verfügbar
+  uid?: number;              // UID of the created message (UIDPLUS), if available
 }
 ```
 
@@ -284,15 +284,15 @@ Einheitlich:
 ## SMTP
 
 Gemeinsame Sent-Ablage-Felder (bei `smtp_send`, `smtp_reply`, `smtp_forward`, `smtp_send_raw`):
-- `savedToSent: boolean` — wurde eine Kopie im Sent-Folder abgelegt?
+- `savedToSent: boolean` — Was a copy saved to the Sent folder?
 - `sentMailbox?: string` — in welchen Folder (falls abgelegt)
-- `sentSaveError?: string` — falls Versand ok, aber Ablage scheiterte (Mail ist trotzdem raus)
+- `sentSaveError?: string` — Send succeeded, but save to Sent failed (email was still delivered)
 
 ### `smtp_send`
 ```ts
 {
   messageId: string;         // Message-ID der gesendeten Mail
-  accepted: string[];        // akzeptierte Empfänger-Adressen
+  accepted: string[];        // Accepted recipient addresses
   rejected: string[];        // abgelehnte
   response: string;          // SMTP-Server-Antwort (letzte Zeile)
   savedToSent: boolean;
@@ -365,7 +365,7 @@ Gemeinsame Sent-Ablage-Felder (bei `smtp_send`, `smtp_reply`, `smtp_forward`, `s
     user: string;            // Mail-Adresse
     imapHost: string;
     smtpHost: string;
-    // pass NIEMALS enthalten — gemäß Sanitizer
+    // NEVER includes pass — per sanitizer
   }>;
   mode: "env" | "config-file";
 }
@@ -418,6 +418,6 @@ Gemeinsame Sent-Ablage-Felder (bei `smtp_send`, `smtp_reply`, `smtp_forward`, `s
 
 ---
 
-## Hinweis zur MCP-Serialisierung
+## Note on MCP Serialization
 
-Das MCP-Protokoll liefert Tool-Ergebnisse als `content`-Blöcke. Diese Shapes sind das **logische** Output-Modell. Der Server verpackt sie als JSON-Text-Content-Block (oder structured content, sobald das SDK das stabil unterstützt). Implementierer: prüfen, was die aktuelle SDK-Version als bevorzugten Rückgabeweg vorgibt, und das logische Modell darauf abbilden — die Feldnamen und -typen oben bleiben in jedem Fall verbindlich.
+The MCP protocol delivers tool results as `content` blocks. These shapes are the **logical** output model. The server wraps them as JSON text content blocks (or structured content once the SDK supports it stably). Implementers: check what the current SDK version prefers as return path, and map the logical model accordingly — the field names and types above remain binding in any case.
