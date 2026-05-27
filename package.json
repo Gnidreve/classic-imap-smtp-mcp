@@ -1,5 +1,5 @@
 {
-  "name": "classic-imap-smtp-mcp",
+  "name": "@everding.solutions/classic-imap-smtp-mcp",
   "version": "0.3.0",
   "description": "A complete classic IMAP/SMTP MCP server. Everything a good mail client does — no OAuth, no cloud lock-in, no scope creep.",
   "type": "module",
@@ -26,12 +26,7 @@
   "bin": {
     "classic-imap-smtp-mcp": "dist/main.js"
   },
-  "files": [
-    "dist",
-    "README.md",
-    "llms.txt",
-    "LICENSE"
-  ],
+  "files": ["dist", "README.md", "llms.txt", "LICENSE"],
   "engines": {
     "node": ">=20"
   },
