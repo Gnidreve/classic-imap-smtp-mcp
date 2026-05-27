@@ -305,8 +305,6 @@ Subcommands:
 
 ## Roadmap
 
-Siehe [`phases.md`](phases.md) für den vollständigen Phasen-Plan.
-
 - **v1.0** — Stable IMAP/SMTP mit allen 36 Tools, klassische Auth
 - **v1.x** — OS-Keychain-Integration für Credentials
 - **v2.0** — IMAP IDLE als streaming long-running tool (falls Client-Support reift)
@@ -329,9 +327,6 @@ Wenn du an classic-imap-smtp-mcp **mit** einem AI-Assistenten arbeitest, lade `A
 | [`AGENTS.md`](AGENTS.md) | Coding-Agents (Claude Code, Cursor, Codex) | Architektur, Konventionen, Build, Vorgaben |
 | [`tools-checklist.md`](tools-checklist.md) | Implementierer | Abhakbare Liste aller 36 Tools mit Status, RFC-Refs, Definition of Done |
 | [`output-shapes.md`](output-shapes.md) | Implementierer | Verbindliche Output-Struktur jedes Tools |
-| [`phases.md`](phases.md) | Projekt-Mitwirkende | Entwicklungsphasen 0–5 |
-| [`phase-0-marktanalyse.md`](phase-0-marktanalyse.md) | Projekt-Mitwirkende | Warum dieses Projekt existiert |
-| [`phase-1-fragerunde.md`](phase-1-fragerunde.md) | Projekt-Mitwirkende | Designentscheidungen Phase 1 |
 | `CONTRIBUTING.md` | Contributors | Dev-Workflow, Branching, PR-Regeln |
 | `SECURITY.md` | Security-Reporter | Vulnerability-Reporting |
 | `CHANGELOG.md` | Alle | Release-Notes |
