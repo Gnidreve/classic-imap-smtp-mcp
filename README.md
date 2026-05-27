@@ -52,7 +52,7 @@ In deiner MCP-Client-Config:
   "mcpServers": {
     "mail": {
       "command": "npx",
-      "args": ["-y", "classic-imap-smtp-mcp"],
+      "args": ["-y", "@gnidreve/classic-imap-smtp-mcp"],
       "env": {
         "CLASSIC_IMAP_SMTP_IMAP_HOST": "imap.example.com",
         "CLASSIC_IMAP_SMTP_IMAP_PORT": "993",
@@ -73,7 +73,7 @@ claude mcp add mail \
   -e CLASSIC_IMAP_SMTP_SMTP_HOST=smtp.example.com \
   -e CLASSIC_IMAP_SMTP_USER=you@example.com \
   -e CLASSIC_IMAP_SMTP_PASS=your-app-password \
-  -- npx -y classic-imap-smtp-mcp
+  -- npx -y @gnidreve/classic-imap-smtp-mcp
 ```
 
 **Cursor / Windsurf / VS Code**: analog. Snippets in [`docs/clients.md`](docs/clients.md).
@@ -255,16 +255,16 @@ Beispiele:
 
 ```bash
 # Nur lesen, aber Senden trotzdem erlauben
-npx classic-imap-smtp-mcp --readonly --allow-tools=smtp_send
+npx @gnidreve/classic-imap-smtp-mcp --readonly --allow-tools=smtp_send
 
 # SMTP komplett aus, nur smtp_send zurückholen
-npx classic-imap-smtp-mcp --no-smtp --allow-tools=smtp_send
+npx @gnidreve/classic-imap-smtp-mcp --no-smtp --allow-tools=smtp_send
 
 # Alles, aber kein Account-Management
-npx classic-imap-smtp-mcp --deny-tools=account_*
+npx @gnidreve/classic-imap-smtp-mcp --deny-tools=account_*
 
 # Alle IMAP-Tools außer den Lösch-Varianten
-npx classic-imap-smtp-mcp --allow-tools=imap_* --deny-tools=imap_delete_*
+npx @gnidreve/classic-imap-smtp-mcp --allow-tools=imap_* --deny-tools=imap_delete_*
 ```
 
 ## CLI

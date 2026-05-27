@@ -35,7 +35,7 @@ If a user asks you to "install classic-imap-smtp-mcp" or "set up mail in my Clau
 6. **Restart the client** so it picks up the new MCP server.
 7. **Verify** by asking the user to prompt "list my email folders" — this should trigger `imap_list_mailboxes`.
 
-If the user wants multiple accounts, instruct them to run `npx classic-imap-smtp-mcp init` to scaffold the TOML config and then edit it. The env-var path is single-account only.
+If the user wants multiple accounts, instruct them to run `npx @gnidreve/classic-imap-smtp-mcp init` to scaffold the TOML config and then edit it. The env-var path is single-account only.
 
 ---
 
@@ -67,7 +67,7 @@ File: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) 
   "mcpServers": {
     "mail": {
       "command": "npx",
-      "args": ["-y", "classic-imap-smtp-mcp"],
+      "args": ["-y", "@gnidreve/classic-imap-smtp-mcp"],
       "env": {
         "CLASSIC_IMAP_SMTP_USER": "<EMAIL>",
         "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>",
@@ -85,7 +85,7 @@ File: `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) 
 claude mcp add mail \
   -e CLASSIC_IMAP_SMTP_USER=<EMAIL> \
   -e CLASSIC_IMAP_SMTP_PASS=<APP_PASSWORD> \
-  -- npx -y classic-imap-smtp-mcp
+  -- npx -y @gnidreve/classic-imap-smtp-mcp
 ```
 
 ### Cursor
@@ -97,7 +97,7 @@ File: `~/.cursor/mcp.json`
   "mcpServers": {
     "mail": {
       "command": "npx",
-      "args": ["-y", "classic-imap-smtp-mcp"],
+      "args": ["-y", "@gnidreve/classic-imap-smtp-mcp"],
       "env": { "CLASSIC_IMAP_SMTP_USER": "<EMAIL>", "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>" }
     }
   }
@@ -118,7 +118,7 @@ File: workspace `.vscode/mcp.json` or user `settings.json` under the `mcp` key:
     "mail": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "classic-imap-smtp-mcp"],
+      "args": ["-y", "@gnidreve/classic-imap-smtp-mcp"],
       "env": { "CLASSIC_IMAP_SMTP_USER": "<EMAIL>", "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>" }
     }
   }

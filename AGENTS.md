@@ -23,7 +23,7 @@ Wenn du ein Mensch bist, der das Projekt verstehen will, lies [`README.md`](READ
 - **Name:** `classic-imap-smtp-mcp` (final, Phase 1 Cluster B1)
 - **Sprache:** TypeScript (final, Phase 1 Cluster A1)
 - **Runtime:** Node ≥ 20 (LTS)
-- **Distribution:** npm-Package mit `bin`-Entry, ausführbar via `npx classic-imap-smtp-mcp`
+- **Distribution:** npm-Package mit `bin`-Entry, ausführbar via `npx @gnidreve/classic-imap-smtp-mcp`
 - **Transport:** stdio only — kein HTTP/SSE, kein Webserver
 - **Lizenz:** TBD (wird vor v1.0-Release final festgelegt; bis dahin im Repo als `LICENSE: TBD`, kein npm-Publish)
 
