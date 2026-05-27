@@ -152,7 +152,7 @@ classic-imap-smtp-mcp registriert je nach Modus und Toggles zwischen 16 (`--read
 | `meta_health` | IMAP + SMTP Erreichbarkeit, Latenz, Capabilities |
 | `meta_server_info` | Aktive Tools, aktiver Modus, Version |
 
-**Gesamt: 36 Tools.** Für jeden bietet `classic-imap-smtp-mcp --help` und die JSON-Schemas im MCP-Inspector vollständige Param-Doku. Die Rückgabe-Struktur jedes Tools ist in [`output-shapes.md`](output-shapes.md) festgelegt.
+**Gesamt: 36 Tools.** Für jeden bietet `classic-imap-smtp-mcp --help` und die JSON-Schemas im MCP-Inspector vollständige Param-Doku. Die Rückgabe-Struktur jedes Tools ist in [`docs/output-shapes.md`](docs/output-shapes.md) festgelegt.
 
 ## Konfiguration
 
@@ -314,7 +314,7 @@ Subcommands:
 
 ## Mitwirken
 
-PRs willkommen. Siehe [`AGENTS.md`](AGENTS.md) für Architektur und Konventionen (gilt für menschliche Contributors gleichermaßen), [`CONTRIBUTING.md`](CONTRIBUTING.md) für Workflow.
+PRs willkommen. Siehe [`AGENTS.md`](AGENTS.md) für Architektur und Konventionen (gilt für menschliche Contributors gleichermaßen), [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) für Workflow.
 
 Wenn du an classic-imap-smtp-mcp **mit** einem AI-Assistenten arbeitest, lade `AGENTS.md` als erstes in den Context — das Repo ist darauf ausgelegt.
 
@@ -323,11 +323,11 @@ Wenn du an classic-imap-smtp-mcp **mit** einem AI-Assistenten arbeitest, lade `A
 | Datei | Zielgruppe | Inhalt |
 |---|---|---|
 | `README.md` (diese Datei) | Menschen | Übersicht, Install, Tool-Katalog, Config |
-| [`llms.txt`](llms.txt) | Konsumierende LLMs | Maschinenoptimierte Install-/Setup-/Tool-Doku |
+| [`docs/llms.txt`](docs/llms.txt) | Konsumierende LLMs | Maschinenoptimierte Install-/Setup-/Tool-Doku |
 | [`AGENTS.md`](AGENTS.md) | Coding-Agents (Claude Code, Cursor, Codex) | Architektur, Konventionen, Build, Vorgaben |
-| [`output-shapes.md`](output-shapes.md) | Implementierer | Verbindliche Output-Struktur jedes Tools |
-| `CONTRIBUTING.md` | Contributors | Dev-Workflow, Branching, PR-Regeln |
-| `SECURITY.md` | Security-Reporter | Vulnerability-Reporting |
+| [`docs/output-shapes.md`](docs/output-shapes.md) | Implementierer | Verbindliche Output-Struktur jedes Tools |
+| `docs/CONTRIBUTING.md` | Contributors | Dev-Workflow, Branching, PR-Regeln |
+| `docs/SECURITY.md` | Security-Reporter | Vulnerability-Reporting |
 | `CHANGELOG.md` | Alle | Release-Notes |
 
 ## Lizenz

@@ -2,7 +2,7 @@
 
 **Audience:** Coding agents (Claude Code, Cursor, Codex, etc.) actively working on the `classic-imap-smtp-mcp` repository.
 
-If you are a *consuming* LLM tasked with installing or using this server for an end user, read [`llms.txt`](llms.txt) instead.
+If you are a *consuming* LLM tasked with installing or using this server for an end user, read [`llms.txt`](docs/llms.txt) instead.
 
 If you are a human trying to understand the project, read [`README.md`](README.md).
 
@@ -10,7 +10,7 @@ If you are a human trying to understand the project, read [`README.md`](README.m
 
 ## TL;DR — what you must know before touching anything
 
-1. **Top-down, declarative.** [`README.md`](README.md) is the contract for tool inputs, CLI flags, and config; [`output-shapes.md`](output-shapes.md) is the contract for tool outputs; [`output-shapes.md`](output-shapes.md) defines the binding output structures. These three are binding.
+1. **Top-down, declarative.** [`README.md`](README.md) is the contract for tool inputs, CLI flags, and config; [`output-shapes.md`](docs/output-shapes.md) is the contract for tool outputs. These three are binding.
 2. **Scope discipline.** If a feature isn't in the README, it doesn't belong in the project. Never add Calendar, AI triage, reminders, or schedulers — no matter how good the idea seems.
 3. **Tests are mandatory.** Every tool PR needs a unit test + (where feasible) integration test against a local Dovecot/Mailpit.
 
@@ -163,7 +163,7 @@ The `READONLY_TOOLS` and `DELETE_TOOLS` constants are hardcoded.
 | `ImapProtocolError` | `IMAP_PROTOCOL_ERROR` | Other IMAP server error (with `imap_response` detail) |
 | `SmtpRelayError` | `SMTP_RELAY_ERROR` | SMTP relay / delivery rejected |
 
-This list is the single source of truth for error codes. README and llms.txt reference it but do not duplicate it.
+This list is the single source of truth for error codes. README and docs/llms.txt reference it but do not duplicate it.
 - **Logging:** exclusively via `server/logging.ts` → stderr. **Never `console.log`**, as that would corrupt the MCP protocol on stdout.
 - **No global variables.** Everything via dependency injection through `ToolContext`.
 
@@ -239,7 +239,7 @@ Before proposing a PR:
 ## When in doubt
 
 - Tool inputs/behavior unclear? → README is the contract.
-- Tool output structure unclear? → `output-shapes.md` is the contract.
+- Tool output structure unclear? → `docs/output-shapes.md` is the contract.
 - Which tools exist? → List all registered tools via `tools/list` in the MCP protocol.
 - Architecture question unclear? → This file.
 - Design decision open? → Ask the user, never guess.
@@ -252,10 +252,10 @@ Before proposing a PR:
 |---|---|---|
 | `README.md` | ✅ | Human-facing docs, tool contract |
 | `AGENTS.md` (this file) | ✅ | Coding agent guidelines |
-| `llms.txt` | ✅ | LLM consumer docs (install/setup/tools, machine-optimized) |
-| `output-shapes.md` | ✅ | Binding output structure for every tool |
-| `CONTRIBUTING.md` | ✅ | Human contributor workflow |
-| `SECURITY.md` | ✅ | Vulnerability reporting |
+| `docs/llms.txt` | ✅ | LLM consumer docs (install/setup/tools, machine-optimized) |
+| `docs/output-shapes.md` | ✅ | Binding output structure for every tool |
+| `docs/CONTRIBUTING.md` | ✅ | Human contributor workflow |
+| `docs/SECURITY.md` | ✅ | Vulnerability reporting |
 | `CHANGELOG.md` | ✅ | Release notes (Keep a Changelog format) |
 | `docs/clients.md` | ✅ | Client config snippets (Cursor, Windsurf, VS Code, …) |
 | `docs/provider-matrix.md` | 🔜 | Provider smoke test results |

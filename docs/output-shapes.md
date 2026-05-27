@@ -1,6 +1,6 @@
 # Output Shapes — binding tool output structures
 
-**Purpose:** While `README.md` and `llms.txt` define the **inputs** for each tool, this file defines their **outputs**. It is part of the contract. Implementations must match exactly; deviations are bugs.
+**Purpose:** While `README.md` and `docs/llms.txt` define the **inputs** for each tool, this file defines their **outputs**. It is part of the contract. Implementations must match exactly; deviations are bugs.
 
 **Conventions:**
 - All outputs are JSON-serializable.
