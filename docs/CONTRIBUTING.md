@@ -1,5 +1,7 @@
 # Contributing
 
+<a href="../README.md#-documentation-index">← Back to Index</a>
+
 Thank you for your interest. Please read `AGENTS.md` first — it covers architecture, conventions, and the PR checklist. They apply to humans and AI agents alike.
 
 ## Workflow

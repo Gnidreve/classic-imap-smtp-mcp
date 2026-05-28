@@ -1,5 +1,7 @@
 # Configuration
 
+<a href="../README.md#-documentation-index">← Back to Index</a> · <a href="install.md">← Previous: Installation</a>
+
 ## Method 1: Environment Variables (Single Account)
 
 Simplest approach. Covers 90 % of users.
@@ -152,3 +154,7 @@ Subcommands:
 - Config file should have `0600` permissions (classic-imap-smtp-mcp warns about overly open permissions)
 - Attachment downloads are capped at a configurable maximum size
 - `CLASSIC_IMAP_SMTP_VERIFY_TLS=false` is intended for self-signed internal servers only — logged as a warning
+
+---
+
+<a href="tools.md">Next: Tools →</a>

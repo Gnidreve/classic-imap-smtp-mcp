@@ -1,5 +1,7 @@
 # Output Shapes — binding tool output structures
 
+<a href="../README.md#-documentation-index">← Back to Index</a> · <a href="tools.md">← Previous: Tools</a>
+
 **Purpose:** While `README.md` and `docs/llms.txt` define the **inputs** for each tool, this file defines their **outputs**. It is part of the contract. Implementations must match exactly; deviations are bugs.
 
 **Conventions:**
@@ -421,3 +423,7 @@ Gemeinsame Sent-Ablage-Felder (bei `smtp_send`, `smtp_reply`, `smtp_forward`, `s
 ## Note on MCP Serialization
 
 The MCP protocol delivers tool results as `content` blocks. These shapes are the **logical** output model. The server wraps them as JSON text content blocks (or structured content once the SDK supports it stably). Implementers: check what the current SDK version prefers as return path, and map the logical model accordingly — the field names and types above remain binding in any case.
+
+---
+
+<a href="clients.md">Next: Client Setup →</a>

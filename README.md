@@ -22,24 +22,35 @@ Full installation instructions: [`docs/install.md`](docs/install.md)
 
 ---
 
-## Documentation
+## 📚 Documentation Index
 
-| If you want to… | Read |
-|-----------------|------|
-| Install and set up | [`docs/install.md`](docs/install.md) |
-| See all 36 tools and what they do | [`docs/tools.md`](docs/tools.md) |
-| Configure env vars, multi-account, CLI flags | [`docs/config.md`](docs/config.md) |
-| Understand tool output structures | [`docs/output-shapes.md`](docs/output-shapes.md) |
-| Get client config snippets (Cursor, Windsurf, VS Code) | [`docs/clients.md`](docs/clients.md) |
-| See provider compatibility matrix | [`docs/provider-matrix.md`](docs/provider-matrix.md) |
-| See comparison with similar MCPs | [`docs/comparison.md`](docs/comparison.md) |
-| Set up an LLM to consume this server | [`docs/llms.txt`](docs/llms.txt) |
-| Contribute code or understand architecture | [`AGENTS.md`](AGENTS.md) |
-| Report a vulnerability | [`docs/SECURITY.md`](docs/SECURITY.md) |
-| See the development roadmap | [`docs/ROADMAP.md`](docs/ROADMAP.md) |
-| Read release notes | [`CHANGELOG.md`](CHANGELOG.md) |
+### 🚀 Getting Started
 
-For a detailed feature comparison with other MCP mail servers, see [`docs/comparison.md`](docs/comparison.md).
+- **[Installation](docs/install.md)** — Set up the server in 60 seconds with `npx` and your mailbox credentials
+- **[Configuration](docs/config.md)** — Environment variables, multi-account via TOML, CLI flags & tool filters
+
+### 📖 Reference
+
+- **[All 36 Tools](docs/tools.md)** — Complete tool reference with parameters
+- **[Output Structures](docs/output-shapes.md)** — What every tool returns (types, fields, examples)
+- **[Provider Matrix](docs/provider-matrix.md)** — IMAP/SMTP host presets for 10+ mail providers
+
+### 🛠️ Guides
+
+- **[Client Setup](docs/clients.md)** — Config snippets for Cursor, Windsurf, VS Code, Claude Code
+- **[Comparison](docs/comparison.md)** — How this MCP compares to other mail servers
+
+### 📄 Project
+
+- **[Roadmap](docs/ROADMAP.md)** — Development phases from 0.3 to 1.0
+- **[Contributing](docs/CONTRIBUTING.md)** — Architecture, code style, how to contribute
+- **[Security](docs/SECURITY.md)** — Report vulnerabilities responsibly
+- **[Changelog](CHANGELOG.md)** — Full release history
+
+### 🤖 For LLM Agents
+
+- **[`llms.txt`](docs/llms.txt)** — Machine-readable guide for AI assistants to consume this server
+- **[`AGENTS.md`](AGENTS.md)** — Technical architecture documentation for AI agents
 
 ---
 

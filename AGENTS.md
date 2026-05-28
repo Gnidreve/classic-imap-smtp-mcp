@@ -1,5 +1,7 @@
 # AGENTS.md
 
+<a href="README.md#-documentation-index">← Back to Index</a>
+
 **Audience:** Coding agents (Claude Code, Cursor, Codex, etc.) actively working on the `classic-imap-smtp-mcp` repository.
 
 If you are a *consuming* LLM tasked with installing or using this server for an end user, read [`llms.txt`](docs/llms.txt) instead.

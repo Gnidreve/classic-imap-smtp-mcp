@@ -1,5 +1,7 @@
 # Roadmap
 
+<a href="../README.md#-documentation-index">← Back to Index</a> · <a href="comparison.md">← Previous: Comparison</a>
+
 This document outlines the planned development path for `@gnidreve/classic-imap-smtp-mcp` from its current state toward a stable 1.0.0 release.
 
 > **Current version:** [v0.3.1](https://www.npmjs.com/package/@gnidreve/classic-imap-smtp-mcp) — all 36 core tools implemented, live on npm, CI/CD running.
@@ -38,3 +40,7 @@ Authentication is classic username/password with STARTTLS/SSL. No OAuth2. Ever.
 - [All Tools](tools.md)
 - [Contributing](CONTRIBUTING.md)
 - [Security Policy](SECURITY.md)
+
+---
+
+<a href="../README.md#-documentation-index">← Back to Index</a>

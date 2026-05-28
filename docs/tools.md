@@ -1,5 +1,7 @@
 # Tool Reference
 
+<a href="../README.md#-documentation-index">← Back to Index</a> · <a href="config.md">← Previous: Configuration</a>
+
 classic-imap-smtp-mcp registers between 16 (`--readonly`) and 36 (default) tools depending on mode and flags.
 
 ## IMAP — Read (12 tools)
@@ -75,3 +77,7 @@ SMTP only delivers — it does not place a copy in your "Sent" folder. Email cli
 | `meta_server_info` | Active tools, active mode, version |
 
 **Full parameter documentation** is available via `classic-imap-smtp-mcp --help` and the JSON schemas exposed in the MCP inspector. Binding output structures for every tool are documented in [`docs/output-shapes.md`](output-shapes.md).
+
+---
+
+<a href="output-shapes.md">Next: Output Structures →</a>

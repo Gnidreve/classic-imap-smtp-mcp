@@ -1,5 +1,7 @@
 # Installation & Setup
 
+<a href="../README.md#-documentation-index">← Back to Index</a>
+
 ## Quick Start (Single Account)
 
 ```json
@@ -51,3 +53,7 @@ After starting the server, ask your AI assistant:
 > "List my email folders"
 
 This triggers `imap_list_mailboxes`. If you see your mailbox folders, everything is connected.
+
+---
+
+<a href="config.md">Next: Configuration →</a>

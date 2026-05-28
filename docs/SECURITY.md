@@ -1,5 +1,7 @@
 # Security Policy
 
+<a href="../README.md#-documentation-index">← Back to Index</a>
+
 ## Reporting
 
 Please do **not** report security vulnerabilities as public issues. Use GitHub Security Advisory (or contact details in the repo). We will respond as quickly as possible.
