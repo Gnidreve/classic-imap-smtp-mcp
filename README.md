@@ -16,9 +16,27 @@
 npx @gnidreve/classic-imap-smtp-mcp
 ```
 
-Set environment variables `CLASSIC_IMAP_SMTP_USER`, `CLASSIC_IMAP_SMTP_PASS`, `CLASSIC_IMAP_SMTP_IMAP_HOST`, and `CLASSIC_IMAP_SMTP_SMTP_HOST` to connect your mailbox.
+Set environment variables `USERNAME` and `PASSWORD` to connect your mailbox:
+
+```bash
+export USERNAME=you@example.com
+export PASSWORD=your-app-password
+```
+
+> [!TIP]
+> For most providers (Gmail, Outlook, iCloud, etc.) that's all you need — IMAP/SMTP hosts are auto-detected. If you need custom hosts or want to avoid collisions, see [`docs/config.md`](docs/config.md).
 
 Full installation instructions: [`docs/install.md`](docs/install.md)
+
+> [!NOTE]
+> With multiple accounts, each tool accepts an optional `account` parameter. Defaults to the account named in `default_account`.
+
+> [!NOTE]
+> `--safe` and `--readonly` are combinable (`--readonly` is stricter and wins).
+> `--no-imap` and `--no-smtp` together produce an empty server — this aborts at startup (almost certainly a config mistake).
+
+> [!TIP]
+> Wildcards match by prefix: `imap_*`, `smtp_*`, `account_*`, `meta_*`, or finer `imap_delete_*`, `imap_bulk_*`, `imap_get_*`.
 
 ---
 

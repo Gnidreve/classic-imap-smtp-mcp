@@ -98,7 +98,7 @@ File: `~/.cursor/mcp.json`
     "mail": {
       "command": "npx",
       "args": ["-y", "@gnidreve/classic-imap-smtp-mcp"],
-      "env": { "CLASSIC_IMAP_SMTP_USER": "<EMAIL>", "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>" }
+      "env": { "USERNAME": "<EMAIL>", "PASSWORD": "<APP_PASSWORD>" }
     }
   }
 }
@@ -119,7 +119,7 @@ File: workspace `.vscode/mcp.json` or user `settings.json` under the `mcp` key:
       "type": "stdio",
       "command": "npx",
       "args": ["-y", "@gnidreve/classic-imap-smtp-mcp"],
-      "env": { "CLASSIC_IMAP_SMTP_USER": "<EMAIL>", "CLASSIC_IMAP_SMTP_PASS": "<APP_PASSWORD>" }
+      "env": { "USERNAME": "<EMAIL>", "PASSWORD": "<APP_PASSWORD>" }
     }
   }
 }

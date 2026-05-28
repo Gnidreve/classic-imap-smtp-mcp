@@ -7,7 +7,26 @@ All notable changes to this project are documented here.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] — 2026-05-28
+
+### Changed
+
+- **Simplified env-var naming.** Replaced `CLASSIC_IMAP_SMTP_*` with shorter, generic names:
+  - `USERNAME` / `PASSWORD` (instead of `USER` / `PASS`)
+  - `IMAP_HOST`, `IMAP_PORT`, `IMAP_TLS`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_TLS`, `FROM_NAME`, `VERIFY_TLS`
+- **Collision handling.** All vars support optional `CLASSIC_` prefix (`CLASSIC_USERNAME`, etc.).
+- **Backward compat.** Old `CLASSIC_IMAP_SMTP_*` names still work as fallback.
+- **Auto-detect now the default.** Most providers only need `USERNAME` + `PASSWORD` —
+  `IMAP_HOST` and `SMTP_HOST` are no longer required.
+
+### Docs
+
+- `docs/ROADMAP.md` added (public development roadmap).
+- `docs/index` style navigation with per-doc Previous/Next.
+
 ## [0.3.1] — 2026-05-27
+
+### Fixed
 
 ### Fixed
 
@@ -35,5 +54,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Auto-detect provider from email domain, defaults for IMAP/SMTP host and TLS.
 - Connection pool with exponential-backoff reconnect and idle timeout.
 
+[0.3.2]: https://github.com/Gnidreve/classic-imap-smtp-mcp/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/Gnidreve/classic-imap-smtp-mcp/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/Gnidreve/classic-imap-smtp-mcp/releases/tag/v0.3.0

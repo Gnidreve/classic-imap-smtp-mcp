@@ -4,6 +4,9 @@
 
 ## Quick Start (Single Account)
 
+> [!TIP]
+> For Gmail, Outlook, iCloud, Fastmail, Posteo, mailbox.org, GMX, web.de, Yahoo, and ProtonMail Bridge, `USERNAME` + `PASSWORD` is all you need — hosts are auto-detected.
+
 ```json
 {
   "mcpServers": {
@@ -11,12 +14,12 @@
       "command": "npx",
       "args": ["-y", "@gnidreve/classic-imap-smtp-mcp"],
       "env": {
-        "CLASSIC_IMAP_SMTP_IMAP_HOST": "imap.example.com",
-        "CLASSIC_IMAP_SMTP_IMAP_PORT": "993",
-        "CLASSIC_IMAP_SMTP_SMTP_HOST": "smtp.example.com",
-        "CLASSIC_IMAP_SMTP_SMTP_PORT": "465",
-        "CLASSIC_IMAP_SMTP_USER": "you@example.com",
-        "CLASSIC_IMAP_SMTP_PASS": "your-app-password"
+        "USERNAME": "you@example.com",
+        "PASSWORD": "your-app-password",
+        "IMAP_HOST": "imap.example.com",
+        "IMAP_PORT": "993",
+        "SMTP_HOST": "smtp.example.com",
+        "SMTP_PORT": "465"
       }
     }
   }
@@ -31,10 +34,10 @@ Place this in your MCP client config:
 
 ```bash
 claude mcp add mail \
-  -e CLASSIC_IMAP_SMTP_IMAP_HOST=imap.example.com \
-  -e CLASSIC_IMAP_SMTP_SMTP_HOST=smtp.example.com \
-  -e CLASSIC_IMAP_SMTP_USER=you@example.com \
-  -e CLASSIC_IMAP_SMTP_PASS=your-app-password \
+  -e IMAP_HOST=imap.example.com \
+  -e SMTP_HOST=smtp.example.com \
+  -e USERNAME=you@example.com \
+  -e PASSWORD=your-app-password \
   -- npx -y @gnidreve/classic-imap-smtp-mcp
 ```
 

@@ -1,4 +1,4 @@
-// Zod-Schemas für Account, Config-File und Env-Vars (Präfix CLASSIC_IMAP_SMTP_). Validiert beim Laden.
+// Zod-Schemas für Account, Config-File und Env-Vars. Validiert beim Laden.
 import { z } from "zod";
 
 export const tlsModeSchema = z.union([

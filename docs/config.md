@@ -6,20 +6,52 @@
 
 Simplest approach. Covers 90 % of users.
 
+> [!NOTE]
+> This is the **new simplified** naming for v0.3.2+. The old `CLASSIC_IMAP_SMTP_*` names still work as a fallback. See [Legacy Names](#legacy-names) below.
+
 | Variable | Required | Default | Description |
 |---|---|---|---|
-| `CLASSIC_IMAP_SMTP_USER` | ✅ | — | Email address / IMAP login |
-| `CLASSIC_IMAP_SMTP_PASS` | ✅ | — | Password or app password |
-| `CLASSIC_IMAP_SMTP_IMAP_HOST` | ✅ | — | IMAP hostname |
-| `CLASSIC_IMAP_SMTP_IMAP_PORT` | | `993` | IMAP port |
-| `CLASSIC_IMAP_SMTP_IMAP_TLS` | | `true` | TLS (`true` = implicit, `starttls`, `false` = plain) |
-| `CLASSIC_IMAP_SMTP_SMTP_HOST` | ✅ | — | SMTP hostname |
-| `CLASSIC_IMAP_SMTP_SMTP_PORT` | | `465` | SMTP port |
-| `CLASSIC_IMAP_SMTP_SMTP_TLS` | | `true` | TLS mode (same as IMAP) |
-| `CLASSIC_IMAP_SMTP_FROM_NAME` | | — | Display name when sending |
-| `CLASSIC_IMAP_SMTP_VERIFY_TLS` | | `true` | Verify certificate |
+| `USERNAME` | ✅ | — | Email address / IMAP login |
+| `PASSWORD` | ✅ | — | Password or app password |
+| `FROM_NAME` | | — | Display name when sending |
+| `IMAP_HOST` | | auto | IMAP hostname |
+| `IMAP_PORT` | | `993` | IMAP port |
+| `IMAP_TLS` | | `true` | TLS (`true` = implicit, `starttls`, `false` = plain) |
+| `SMTP_HOST` | | auto | SMTP hostname |
+| `SMTP_PORT` | | `465` | SMTP port |
+| `SMTP_TLS` | | `true` | TLS mode (same as IMAP) |
+| `VERIFY_TLS` | | `true` | Verify certificate |
 
-For Gmail, Outlook, iCloud, Fastmail, Posteo, mailbox.org, GMX, web.de, Yahoo, ProtonMail Bridge, setting `CLASSIC_IMAP_SMTP_USER` + `CLASSIC_IMAP_SMTP_PASS` is enough — host and port are auto-detected.
+> [!TIP]
+> For Gmail, Outlook, iCloud, Fastmail, Posteo, mailbox.org, GMX, web.de, Yahoo, ProtonMail Bridge, setting only `USERNAME` + `PASSWORD` is enough — host and port are auto-detected.
+
+### Collision Handling
+
+If `USERNAME`, `PASSWORD`, or other bare names collide with existing environment variables, prefix all of them with `CLASSIC_`:
+
+```bash
+export CLASSIC_USERNAME=you@gmail.com
+export CLASSIC_PASSWORD=your-app-password
+```
+
+### Legacy Names
+
+The old `CLASSIC_IMAP_SMTP_*` env vars continue to work as a lowest-priority fallback:
+
+| New Name | New Prefixed | Old Prefixed (Fallback) |
+|----------|-------------|------------------------|
+| `USERNAME` | `CLASSIC_USERNAME` | `CLASSIC_IMAP_SMTP_USER` |
+| `PASSWORD` | `CLASSIC_PASSWORD` | `CLASSIC_IMAP_SMTP_PASS` |
+| `FROM_NAME` | `CLASSIC_FROM_NAME` | `CLASSIC_IMAP_SMTP_FROM_NAME` |
+| `IMAP_HOST` | `CLASSIC_IMAP_HOST` | `CLASSIC_IMAP_SMTP_IMAP_HOST` |
+| `IMAP_PORT` | `CLASSIC_IMAP_PORT` | `CLASSIC_IMAP_SMTP_IMAP_PORT` |
+| `IMAP_TLS` | `CLASSIC_IMAP_TLS` | `CLASSIC_IMAP_SMTP_IMAP_TLS` |
+| `SMTP_HOST` | `CLASSIC_SMTP_HOST` | `CLASSIC_IMAP_SMTP_SMTP_HOST` |
+| `SMTP_PORT` | `CLASSIC_SMTP_PORT` | `CLASSIC_IMAP_SMTP_SMTP_PORT` |
+| `SMTP_TLS` | `CLASSIC_SMTP_TLS` | `CLASSIC_IMAP_SMTP_SMTP_TLS` |
+| `VERIFY_TLS` | `CLASSIC_VERIFY_TLS` | `CLASSIC_IMAP_SMTP_VERIFY_TLS` |
+
+**Resolution order for each variable:** `CLASSIC_<NAME>` → `CLASSIC_IMAP_SMTP_<OLD>` → `<NAME>` (`USER`/`PASS` as final bare fallback).
 
 ## Method 2: Config File (Multi-Account)
 
@@ -153,7 +185,7 @@ Subcommands:
 - Recommendation: **app passwords** instead of account passwords (Gmail, Outlook, iCloud support this)
 - Config file should have `0600` permissions (classic-imap-smtp-mcp warns about overly open permissions)
 - Attachment downloads are capped at a configurable maximum size
-- `CLASSIC_IMAP_SMTP_VERIFY_TLS=false` is intended for self-signed internal servers only — logged as a warning
+- `VERIFY_TLS=false` (or `CLASSIC_VERIFY_TLS=false`) is intended for self-signed internal servers only — logged as a warning
 
 ---
 

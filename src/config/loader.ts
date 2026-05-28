@@ -13,12 +13,32 @@ export interface ConfigStore {
   configPath?: string;
 }
 
-const ENV = "CLASSIC_IMAP_SMTP_";
+// Env-Var-Auflösung mit Cascade:
+//   1. CLASSIC_<NAME>          (neuer Prefix, für Kollisionsfälle)
+//   2. CLASSIC_IMAP_SMTP_<OLD> (alter Prefix, Rückwärtskompatibilität)
+//   3. <NAME>                  (Bare Name, Default)
+//   4. <OLD>                   (alter Bare Name, Rückwärtskompatibilität)
+const PREFIX = "CLASSIC_";
+const LEGACY_PREFIX = "CLASSIC_IMAP_SMTP_";
 
-// Liest die Single-Account-Konfiguration aus Env-Vars (Präfix CLASSIC_IMAP_SMTP_).
+function envVal(name: string, legacyName?: string): string | undefined {
+  return (
+    process.env[`${PREFIX}${name}`] ??
+    (legacyName ? process.env[`${LEGACY_PREFIX}${legacyName}`] : undefined) ??
+    process.env[name] ??
+    (legacyName ? process.env[legacyName] : undefined)
+  );
+}
+
+function numEnv(name: string, legacyName?: string): number | undefined {
+  const v = envVal(name, legacyName);
+  return v ? Number.parseInt(v, 10) : undefined;
+}
+
+// Liest die Single-Account-Konfiguration aus Env-Vars.
 function loadFromEnv(): ConfigStore | null {
-  const user = process.env[`${ENV}USER`];
-  const pass = process.env[`${ENV}PASS`];
+  const user = envVal("USERNAME", "USER");
+  const pass = envVal("PASSWORD", "PASS");
   if (!user || !pass) return null;
 
   const preset = detectProvider(user);
@@ -26,14 +46,14 @@ function loadFromEnv(): ConfigStore | null {
     name: "default",
     user,
     pass,
-    from_name: process.env[`${ENV}FROM_NAME`],
-    imap_host: process.env[`${ENV}IMAP_HOST`] ?? preset?.imap_host,
-    imap_port: numEnv(`${ENV}IMAP_PORT`) ?? preset?.imap_port ?? 993,
-    imap_tls: process.env[`${ENV}IMAP_TLS`] ?? preset?.imap_tls ?? "implicit",
-    smtp_host: process.env[`${ENV}SMTP_HOST`] ?? preset?.smtp_host,
-    smtp_port: numEnv(`${ENV}SMTP_PORT`) ?? preset?.smtp_port ?? 465,
-    smtp_tls: process.env[`${ENV}SMTP_TLS`] ?? preset?.smtp_tls ?? "implicit",
-    verify_tls: process.env[`${ENV}VERIFY_TLS`] !== "false",
+    from_name: envVal("FROM_NAME"),
+    imap_host: envVal("IMAP_HOST") ?? preset?.imap_host,
+    imap_port: numEnv("IMAP_PORT") ?? preset?.imap_port ?? 993,
+    imap_tls: envVal("IMAP_TLS") ?? preset?.imap_tls ?? "implicit",
+    smtp_host: envVal("SMTP_HOST") ?? preset?.smtp_host,
+    smtp_port: numEnv("SMTP_PORT") ?? preset?.smtp_port ?? 465,
+    smtp_tls: envVal("SMTP_TLS") ?? preset?.smtp_tls ?? "implicit",
+    verify_tls: envVal("VERIFY_TLS") !== "false",
   };
   const account = accountSchema.parse(normalizeTls(raw));
   return { mode: "env", defaultAccount: "default", accounts: new Map([["default", account]]) };
@@ -88,11 +108,6 @@ function checkPermissions(path: string): void {
       { path, mode: mode.toString(8) },
     );
   }
-}
-
-function numEnv(key: string): number | undefined {
-  const v = process.env[key];
-  return v ? Number.parseInt(v, 10) : undefined;
 }
 
 // "true" -> implicit, "starttls" -> starttls, "false" -> none (Env akzeptiert true/false/starttls).
