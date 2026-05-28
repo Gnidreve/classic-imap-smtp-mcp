@@ -36,6 +36,7 @@ Full installation instructions: [`docs/install.md`](docs/install.md)
 | Set up an LLM to consume this server | [`docs/llms.txt`](docs/llms.txt) |
 | Contribute code or understand architecture | [`AGENTS.md`](AGENTS.md) |
 | Report a vulnerability | [`docs/SECURITY.md`](docs/SECURITY.md) |
+| See the development roadmap | [`docs/ROADMAP.md`](docs/ROADMAP.md) |
 | Read release notes | [`CHANGELOG.md`](CHANGELOG.md) |
 
 For a detailed feature comparison with other MCP mail servers, see [`docs/comparison.md`](docs/comparison.md).
