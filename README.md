@@ -7,6 +7,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/Gnidreve/classic-imap-smtp-mcp/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/Gnidreve/classic-imap-smtp-mcp/actions)
 [![GitHub](https://img.shields.io/badge/GitHub-Repo-181717?style=flat-square&logo=github)](https://github.com/Gnidreve/classic-imap-smtp-mcp)
 [![Codeberg](https://img.shields.io/badge/Codeberg-Mirror-2185D0?style=flat-square&logo=codeberg)](https://codeberg.org/Gnidreve/classic-imap-smtp-mcp)
+[![GitLab](https://img.shields.io/badge/GitLab-Mirror-FC6D26?style=flat-square&logo=gitlab)](https://gitlab.com/Gnidreve/classic-imap-smtp-mcp)
 
 ---
 
