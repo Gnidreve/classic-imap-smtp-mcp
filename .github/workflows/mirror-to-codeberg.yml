@@ -1,0 +1,25 @@
+name: Mirror to Codeberg
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Push to Codeberg
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan codeberg.org >> ~/.ssh/known_hosts
+          echo "${{ secrets.CodeBerg_Deploy_Key }}" > ~/.ssh/codeberg.key
+          chmod 600 ~/.ssh/codeberg.key
+          eval $(ssh-agent -s)
+          ssh-add ~/.ssh/codeberg.key
+          git remote add codeberg git@codeberg.org:Gnidreve/classic-imap-smtp-mcp.git
+          git push --mirror codeberg
