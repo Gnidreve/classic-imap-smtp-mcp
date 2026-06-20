@@ -10,3 +10,11 @@ tmp/
 # Internal planning docs (not public)
 phases.md
 phase-*.md
+
+# OpenClaw agent runtime state
+/.openclaw/
+/openclaw.json
+/.openclaw*
+
+# Secret credentials
+.gitsecret/
