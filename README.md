@@ -13,10 +13,18 @@
 
 **classic-imap-smtp-mcp** connects any IMAP/SMTP mailbox to an AI assistant via the [Model Context Protocol](https://modelcontextprotocol.io). It runs locally, supports multiple accounts, and provides 36 tools for reading, writing, and managing email — nothing more, nothing less.
 
+It can run either over classic `stdio` for local MCP clients or over HTTP with Streamable MCP plus a legacy SSE compatibility endpoint for container deployments.
+
 ## Quick Start
 
 ```bash
 npx @gnidreve/classic-imap-smtp-mcp
+```
+
+For container or remote MCP setups:
+
+```bash
+npx @gnidreve/classic-imap-smtp-mcp --transport=http --http-host=0.0.0.0 --http-port=3000
 ```
 
 Set environment variables `USERNAME` and `PASSWORD` to connect your mailbox:

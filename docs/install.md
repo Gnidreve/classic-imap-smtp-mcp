@@ -49,6 +49,30 @@ See [`docs/clients.md`](clients.md) for Cursor, Windsurf, VS Code, and other cli
 
 See [`docs/config.md`](config.md) for config file and multi-account setup.
 
+## Docker / HTTP Deployment
+
+Phase 4 adds a container-friendly transport mode:
+
+```bash
+docker build -t classic-imap-smtp-mcp .
+docker run --rm -p 3000:3000 \
+  -e USERNAME=you@example.com \
+  -e PASSWORD=your-app-password \
+  -e MCP_TRANSPORT=http \
+  -e MCP_HOST=0.0.0.0 \
+  -e MCP_PORT=3000 \
+  classic-imap-smtp-mcp
+```
+
+Available HTTP endpoints by default:
+- `POST/GET/DELETE /mcp` for Streamable HTTP MCP clients
+- `GET /sse` plus `POST /messages?sessionId=...` for legacy SSE clients
+
+You can override them with:
+- `--http-endpoint=/custom-mcp`
+- `--sse-endpoint=/custom-sse`
+- `--messages-endpoint=/custom-messages`
+
 ## Verify It Works
 
 After starting the server, ask your AI assistant:

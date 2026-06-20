@@ -23,6 +23,7 @@
     "type": "git",
     "url": "git+https://github.com/Gnidreve/classic-imap-smtp-mcp.git"
   },
+  "packageManager": "pnpm@10.12.4",
   "bin": {
     "classic-imap-smtp-mcp": "dist/main.js"
   },
@@ -33,7 +34,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/bin/main.ts",
-    "start": "node dist/bin/main.js",
+    "start": "node dist/main.js",
     "typecheck": "tsc --noEmit",
     "lint": "biome check src test",
     "lint:fix": "biome check --write src test",

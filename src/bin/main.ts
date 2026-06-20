@@ -6,6 +6,7 @@ import { defaultConfigPath } from "../config/xdg.js";
 import { ImapPool } from "../connections/imap-pool.js";
 import { SmtpPool } from "../connections/smtp-pool.js";
 import { AccountNotFoundError, McpMailError } from "../lib/errors.js";
+import { runHttp } from "../server/http.js";
 import { createLogger } from "../server/logging.js";
 import { parseArgs } from "../server/options.js";
 import { resolveActiveTools } from "../server/registry.js";
@@ -13,7 +14,7 @@ import { SERVER_VERSION, buildServer, runStdio } from "../server/server.js";
 import type { ToolContext } from "../tools/_types.js";
 import { ALL_TOOLS } from "../tools/index.js";
 
-const HELP = `classic-imap-smtp-mcp — classic IMAP/SMTP MCP server (stdio)
+const HELP = `classic-imap-smtp-mcp — classic IMAP/SMTP MCP server
 
 Usage: classic-imap-smtp-mcp [options]
 
@@ -22,12 +23,19 @@ Options:
   --readonly           Read-only: no writes, no SMTP send
   --no-imap            Disable all IMAP tools
   --no-smtp            Disable all SMTP tools
+  --transport=<mode>   stdio|http (default: stdio)
   --allow-tools=<csv>  Explicitly enable tools (overrides feature flags, prefix wildcards)
   --deny-tools=<csv>   Explicitly remove tools (wins over everything, prefix wildcards)
   --account=<name>     Default account override
   --config=<path>      Alternative config path
   --log-level=<level>  trace|debug|info|warn|error (default: info)
   --log-format=<fmt>   json|pretty (default: json)
+  --http-host=<host>   HTTP bind host (default: 127.0.0.1)
+  --http-port=<port>   HTTP bind port (default: 3000)
+  --http-endpoint=<p>  Streamable HTTP endpoint (default: /mcp)
+  --sse-endpoint=<p>   Legacy SSE GET endpoint (default: /sse)
+  --messages-endpoint=<p>
+                       Legacy SSE POST endpoint (default: /messages)
   -h, --help           Show help
   -V, --version        Show version
 
@@ -126,17 +134,22 @@ async function main(): Promise<void> {
     },
   };
 
-  const server = buildServer(parsed.options, ctx, logger);
+  const createServer = () => buildServer(parsed.options, ctx, logger);
 
   const shutdown = async () => {
-    await Promise.allSettled([imap.closeAll(), smtp.closeAll()]);
+    await Promise.allSettled([runtime?.close(), imap.closeAll(), smtp.closeAll()]);
     process.exit(0);
   };
   process.on("SIGINT", shutdown);
   process.on("SIGTERM", shutdown);
 
-  await runStdio(server);
-  logger.info("classic-imap-smtp-mcp running on stdio");
+  let runtime: { close(): Promise<void> } | undefined;
+  if (parsed.options.transport === "http") {
+    runtime = await runHttp(parsed.options, logger, createServer);
+  } else {
+    await runStdio(createServer());
+    logger.info("classic-imap-smtp-mcp running on stdio");
+  }
 }
 
 async function handleInit(logger: ReturnType<typeof createLogger>): Promise<void> {

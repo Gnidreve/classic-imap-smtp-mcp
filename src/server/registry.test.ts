@@ -9,8 +9,14 @@ const base: ResolvedOptions = {
   readonly: false,
   noImap: false,
   noSmtp: false,
+  transport: "stdio",
   logLevel: "info",
   logFormat: "json",
+  httpHost: "127.0.0.1",
+  httpPort: 3000,
+  httpEndpoint: "/mcp",
+  sseEndpoint: "/sse",
+  messagesEndpoint: "/messages",
 };
 
 const fakeTool = (name: string, category: ToolDefinition["category"]): ToolDefinition => ({

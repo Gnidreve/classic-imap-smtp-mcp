@@ -4,12 +4,18 @@ export interface ResolvedOptions {
   readonly: boolean;
   noImap: boolean;
   noSmtp: boolean;
+  transport: "stdio" | "http";
   allowTools?: string[];
   denyTools?: string[];
   account?: string;
   configPath?: string;
   logLevel: string;
   logFormat: "json" | "pretty";
+  httpHost: string;
+  httpPort: number;
+  httpEndpoint: string;
+  sseEndpoint: string;
+  messagesEndpoint: string;
 }
 
 export interface ParsedArgs {
@@ -26,8 +32,14 @@ export function parseArgs(argv: string[]): ParsedArgs {
     readonly: false,
     noImap: false,
     noSmtp: false,
-    logLevel: "info",
-    logFormat: "json",
+    transport: envTransport(process.env.MCP_TRANSPORT),
+    logLevel: process.env.MCP_LOG_LEVEL || "info",
+    logFormat: process.env.MCP_LOG_FORMAT === "pretty" ? "pretty" : "json",
+    httpHost: process.env.MCP_HOST || "127.0.0.1",
+    httpPort: envPort(process.env.MCP_PORT),
+    httpEndpoint: envPath(process.env.MCP_ENDPOINT, "/mcp"),
+    sseEndpoint: envPath(process.env.MCP_SSE_PATH, "/sse"),
+    messagesEndpoint: envPath(process.env.MCP_MESSAGES_PATH, "/messages"),
   };
   let subcommand: ParsedArgs["subcommand"];
   let subcommandArg: string | undefined;
@@ -46,6 +58,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
     else if (arg === "--readonly") opts.readonly = true;
     else if (arg === "--no-imap") opts.noImap = true;
     else if (arg === "--no-smtp") opts.noSmtp = true;
+    else if (arg.startsWith("--transport=")) opts.transport = envTransport(val(arg));
     else if (arg === "-h" || arg === "--help") help = true;
     else if (arg === "-V" || arg === "--version") version = true;
     else if (arg.startsWith("--allow-tools=")) opts.allowTools = csv(arg);
@@ -55,6 +68,12 @@ export function parseArgs(argv: string[]): ParsedArgs {
     else if (arg.startsWith("--log-level=")) opts.logLevel = val(arg);
     else if (arg.startsWith("--log-format="))
       opts.logFormat = val(arg) === "pretty" ? "pretty" : "json";
+    else if (arg.startsWith("--http-host=")) opts.httpHost = val(arg);
+    else if (arg.startsWith("--http-port=")) opts.httpPort = envPort(val(arg));
+    else if (arg.startsWith("--http-endpoint=")) opts.httpEndpoint = envPath(val(arg), "/mcp");
+    else if (arg.startsWith("--sse-endpoint=")) opts.sseEndpoint = envPath(val(arg), "/sse");
+    else if (arg.startsWith("--messages-endpoint="))
+      opts.messagesEndpoint = envPath(val(arg), "/messages");
   }
 
   return { subcommand, subcommandArg, options: opts, help, version };
@@ -66,3 +85,13 @@ const csv = (arg: string) =>
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
+const envTransport = (value: string | undefined): "stdio" | "http" =>
+  value === "http" ? "http" : "stdio";
+const envPort = (value: string | undefined): number => {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 && parsed <= 65535 ? parsed : 3000;
+};
+const envPath = (value: string | undefined, fallback: string): string => {
+  if (!value) return fallback;
+  return value.startsWith("/") ? value : `/${value}`;
+};
