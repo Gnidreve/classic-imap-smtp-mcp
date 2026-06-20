@@ -54,7 +54,7 @@
     "zod": "^3.23.0"
   },
   "devDependencies": {
-    "@biomejs/biome": "^1.9.0",
+    "@biomejs/biome": "^2.5.0",
     "@types/mailparser": "^3.4.0",
     "@types/node": "^20.0.0",
     "@types/nodemailer": "^6.4.0",
