@@ -1,13 +1,11 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
-  "organizeImports": { "enabled": true },
+  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
-      "security": "all",
-      "suspicious": { "noConsoleLog": "error" },
-      "complexity": { "noExcessiveCognitiveComplexity": "off" }
+      "security": "on",
+      "suspicious": { "noConsole": "error" }
     }
   },
   "formatter": {
@@ -15,5 +13,12 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100
-  }
+  },
+  "overrides": [
+    {
+      "include": ["pnpm-lock.yaml"],
+      "linter": { "enabled": false },
+      "formatter": { "enabled": false }
+    }
+  ]
 }
