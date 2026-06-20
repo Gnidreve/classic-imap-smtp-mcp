@@ -18,3 +18,9 @@ phase-*.md
 
 # Secret credentials
 .gitsecret/
+
+# Package manager cache
+.npm/
+
+# Container runtime config
+.ssh/
