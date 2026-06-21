@@ -13,12 +13,5 @@
     "indentStyle": "space",
     "indentWidth": 2,
     "lineWidth": 100
-  },
-  "overrides": [
-    {
-      "files": { "include": ["pnpm-lock.yaml"] },
-      "linter": { "enabled": false },
-      "formatter": { "enabled": false }
-    }
-  ]
+  }
 }
