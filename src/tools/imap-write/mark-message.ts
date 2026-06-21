@@ -13,6 +13,7 @@ export default defineTool({
     flags: z
       .array(z.string())
       .min(1)
+      // IMAP flag names, not secrets
       .describe("Flags to set/add/remove (e.g. ['\\Seen', '\\Flagged'])"),
     mode: z
       .enum(["set", "add", "remove"])

@@ -1,6 +1,6 @@
 // CLI-Entry (Command: classic-imap-smtp-mcp): parst Args, baut Context, startet stdio-Server. Fail-fast bei --no-imap+--no-smtp.
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
+import { dirname } from "node:path";
 import { loadConfig } from "../config/loader.js";
 import { defaultConfigPath } from "../config/xdg.js";
 import { ImapPool } from "../connections/imap-pool.js";
@@ -152,7 +152,7 @@ async function main(): Promise<void> {
   }
 }
 
-async function handleInit(logger: ReturnType<typeof createLogger>): Promise<void> {
+async function handleInit(_logger: ReturnType<typeof createLogger>): Promise<void> {
   const configPath = defaultConfigPath();
   const dir = dirname(configPath);
 
