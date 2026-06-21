@@ -7,6 +7,7 @@ on:
       - 'v*'
     branches:
       - main
+  workflow_dispatch:
 
 env:
   DOCKER_IMAGE: vaatu/classic-imap-smtp-mcp
