@@ -16,6 +16,8 @@ export interface ResolvedOptions {
   httpEndpoint: string;
   sseEndpoint: string;
   messagesEndpoint: string;
+  healthEndpoint: string;
+  httpTimeoutMs: number;
 }
 
 export interface ParsedArgs {
@@ -40,6 +42,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
     httpEndpoint: envPath(process.env.MCP_ENDPOINT, "/mcp"),
     sseEndpoint: envPath(process.env.MCP_SSE_PATH, "/sse"),
     messagesEndpoint: envPath(process.env.MCP_MESSAGES_PATH, "/messages"),
+    healthEndpoint: envPath(process.env.MCP_HEALTH_PATH, "/healthz"),
+    httpTimeoutMs: 30_000,
   };
   let subcommand: ParsedArgs["subcommand"];
   let subcommandArg: string | undefined;
@@ -74,6 +78,8 @@ export function parseArgs(argv: string[]): ParsedArgs {
     else if (arg.startsWith("--sse-endpoint=")) opts.sseEndpoint = envPath(val(arg), "/sse");
     else if (arg.startsWith("--messages-endpoint="))
       opts.messagesEndpoint = envPath(val(arg), "/messages");
+    else if (arg.startsWith("--health-endpoint="))
+      opts.healthEndpoint = envPath(val(arg), "/healthz");
   }
 
   return { subcommand, subcommandArg, options: opts, help, version };

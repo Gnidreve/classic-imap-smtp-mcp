@@ -7,7 +7,6 @@ import { AuthError, RateLimitError, SmtpRelayError } from "../lib/errors.js";
 import type { Logger } from "../server/logging.js";
 
 const RATE_LIMIT_WINDOW_MS = 60_000; // 1 Minute
-const DEFAULT_RATE_LIMIT = 10; // Max Messages pro Minute
 
 interface RateLimitBucket {
   tokens: number;
@@ -18,10 +17,14 @@ export class SmtpPool {
   private transports = new Map<string, Transporter>();
   private rateBuckets = new Map<string, RateLimitBucket>();
 
+  private rateLimitPerMinute: number;
+
   constructor(
     private readonly config: ConfigStore,
     private readonly logger: Logger,
-  ) {}
+  ) {
+    this.rateLimitPerMinute = config.limits?.smtp_per_minute ?? 10;
+  }
 
   // Liefert einen nodemailer-Transporter für den Account.
   async acquire(account: string): Promise<Transporter> {
@@ -42,7 +45,7 @@ export class SmtpPool {
   }
 
   private checkRateLimit(account: string): void {
-    const limit = DEFAULT_RATE_LIMIT;
+    const limit = this.rateLimitPerMinute;
     const bucket = this.rateBuckets.get(account) ?? { tokens: limit, lastRefill: Date.now() };
 
     // Refill tokens

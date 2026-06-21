@@ -1,3 +1,4 @@
+# Mirror main branch to Codeberg mirror repository.
 name: Mirror to Codeberg
 
 on:
@@ -14,12 +15,12 @@ jobs:
           fetch-depth: 0
 
       - name: Push to Codeberg
+        env:
+          CODEBERG_DEPLOY_KEY: ${{ secrets.CodeBerg_Deploy_Key }}
         run: |
           mkdir -p ~/.ssh
-          ssh-keyscan codeberg.org >> ~/.ssh/known_hosts
-          echo "${{ secrets.CodeBerg_Deploy_Key }}" > ~/.ssh/codeberg.key
-          chmod 600 ~/.ssh/codeberg.key
+          ssh-keyscan codeberg.org >> ~/.ssh/known_hosts 2>/dev/null
           eval $(ssh-agent -s)
-          ssh-add ~/.ssh/codeberg.key
+          echo "$CODEBERG_DEPLOY_KEY" | ssh-add -
           git remote add codeberg git@codeberg.org:Gnidreve/classic-imap-smtp-mcp.git
           git push --mirror codeberg

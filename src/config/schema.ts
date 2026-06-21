@@ -27,6 +27,7 @@ export const limitsSchema = z.object({
   smtp_per_minute: z.number().int().positive().default(10),
   imap_ops_per_second: z.number().int().positive().default(100),
 });
+export type LimitsConfig = z.infer<typeof limitsSchema>;
 
 export const fileConfigSchema = z.object({
   default_account: z.string().optional(),

@@ -9,7 +9,7 @@ import type { ResolvedOptions } from "./options.js";
 import { resolveActiveTools } from "./registry.js";
 
 export const SERVER_NAME = "classic-imap-smtp-mcp";
-export const SERVER_VERSION = "0.3.0";
+export const SERVER_VERSION = "0.4.0";
 
 export function buildServer(opts: ResolvedOptions, ctx: ToolContext, logger: Logger): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });

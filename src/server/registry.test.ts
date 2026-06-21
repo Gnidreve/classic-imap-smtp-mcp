@@ -17,6 +17,8 @@ const base: ResolvedOptions = {
   httpEndpoint: "/mcp",
   sseEndpoint: "/sse",
   messagesEndpoint: "/messages",
+  healthEndpoint: "/healthz",
+  httpTimeoutMs: 30_000,
 };
 
 const fakeTool = (name: string, category: ToolDefinition["category"]): ToolDefinition => ({

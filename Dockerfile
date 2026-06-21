@@ -6,7 +6,9 @@ RUN corepack enable && corepack prepare pnpm@10.12.4 --activate && pnpm install 
 COPY . .
 RUN pnpm build
 
+# Use tini as PID 1 to reap zombie processes
 FROM node:20.20.2-alpine
+RUN apk add --no-cache tini curl
 WORKDIR /app
 ENV NODE_ENV=production
 ENV MCP_TRANSPORT=http
@@ -19,4 +21,6 @@ RUN addgroup -S mcp && adduser -S -G mcp mcp \
   && chown -R mcp:mcp /app
 USER mcp
 EXPOSE 3000
-ENTRYPOINT ["node", "dist/main.js"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD curl -sf http://localhost:3000/healthz || exit 1
+ENTRYPOINT ["/sbin/tini", "--", "node", "dist/main.js"]

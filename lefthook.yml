@@ -7,4 +7,4 @@ pre-commit:
       run: npx biome check {staged_files}
     typecheck:
       glob: "*.ts"
-      run: npm run typecheck
+      run: pnpm run typecheck

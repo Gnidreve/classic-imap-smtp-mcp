@@ -118,6 +118,12 @@ async function main(): Promise<void> {
   const imap = new ImapPool(config, logger);
   const smtp = new SmtpPool(config, logger);
 
+  // Periodic idle-connection pruning (every 60s)
+  const pruneTimer = setInterval(() => {
+    imap.pruneIdle().catch((err) => logger.warn({ err }, "IMAP pruneIdle error"));
+  }, 60_000);
+  pruneTimer.unref();
+
   const activeTools = resolveActiveTools(ALL_TOOLS, parsed.options).map((t) => t.name);
 
   const ctx: ToolContext = {
@@ -137,6 +143,7 @@ async function main(): Promise<void> {
   const createServer = () => buildServer(parsed.options, ctx, logger);
 
   const shutdown = async () => {
+    clearInterval(pruneTimer);
     await Promise.allSettled([runtime?.close(), imap.closeAll(), smtp.closeAll()]);
     process.exit(0);
   };

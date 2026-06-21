@@ -5,6 +5,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { SSEServerTransport } from "@modelcontextprotocol/sdk/server/sse.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
+import { SERVER_NAME, SERVER_VERSION } from "./server.js";
 import type { Logger } from "./logging.js";
 import type { ResolvedOptions } from "./options.js";
 
@@ -37,6 +38,25 @@ export async function runHttp(
 ): Promise<HttpRuntime> {
   const app = createMcpExpressApp({ host: opts.httpHost });
   const transports = new Map<string, HttpTransport>();
+
+  // Security headers middleware
+  app.use((_req: HttpRequest, res: HttpResponse, next: () => void) => {
+    res.setHeader("X-Content-Type-Options", "nosniff");
+    res.setHeader("X-Frame-Options", "DENY");
+    res.setHeader("Referrer-Policy", "no-referrer");
+    next();
+  });
+
+  // Healthcheck endpoint (outside MCP protocol, for orchestrators / Docker HEALTHCHECK)
+  app.get(opts.healthEndpoint, (_req: HttpRequest, res: HttpResponse) => {
+    res.setHeader("Content-Type", "application/json");
+    res.status(200).json({
+      status: "ok",
+      server: SERVER_NAME,
+      version: SERVER_VERSION,
+      timestamp: new Date().toISOString(),
+    });
+  });
 
   const connectServer = async (transport: HttpTransport): Promise<void> => {
     const server = createServer();
@@ -126,6 +146,7 @@ export async function runHttp(
   const server = await new Promise<import("node:http").Server>((resolve, reject) => {
     const httpServer = app.listen(opts.httpPort, opts.httpHost, () => resolve(httpServer));
     httpServer.once("error", reject);
+    httpServer.timeout = opts.httpTimeoutMs;
   });
 
   logger.info(
@@ -135,6 +156,7 @@ export async function runHttp(
       endpoint: opts.httpEndpoint,
       sseEndpoint: opts.sseEndpoint,
       messagesEndpoint: opts.messagesEndpoint,
+      healthEndpoint: opts.healthEndpoint,
     },
     "classic-imap-smtp-mcp running over HTTP",
   );

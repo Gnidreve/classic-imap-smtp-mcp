@@ -1,4 +1,5 @@
-# CI: typecheck + lint + unit-test + build bei jedem Push/PR. Integration-Tests laufen separat (nightly.yml).
+# CI: typecheck + lint + unit-test + build bei jedem Push/PR + Secret-Scanning.
+# Integration-Tests laufen separat (nightly.yml).
 name: CI
 on:
   push: { branches: [main] }
@@ -14,6 +15,25 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm lint
-      - run: pnpm audit || true
+      - name: pnpm audit (non-blocking advisory)
+        run: pnpm audit --audit-level=high || echo "::warning::pnpm audit found high/critical vulnerabilities"
       - run: pnpm test
       - run: pnpm build
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks secret scan
+        uses: gitleaks/gitleaks-action@v2
+        continue-on-error: true
+
+  dependency-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Dependency review
+        uses: actions/dependency-review-action@v4

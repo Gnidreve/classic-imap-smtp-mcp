@@ -3,13 +3,14 @@ import { readFileSync, statSync } from "node:fs";
 import { parse as parseToml } from "smol-toml";
 import { ConfigError, PermissionError } from "../lib/errors.js";
 import { detectProvider } from "./providers.js";
-import { type AccountConfig, type FileConfig, accountSchema, fileConfigSchema } from "./schema.js";
+import { type AccountConfig, type FileConfig, type LimitsConfig, accountSchema, fileConfigSchema } from "./schema.js";
 import { defaultConfigPath } from "./xdg.js";
 
 export interface ConfigStore {
   mode: "env" | "config-file";
   defaultAccount: string;
   accounts: Map<string, AccountConfig>;
+  limits: LimitsConfig;
   configPath?: string;
 }
 
@@ -56,7 +57,12 @@ function loadFromEnv(): ConfigStore | null {
     verify_tls: envVal("VERIFY_TLS") !== "false",
   };
   const account = accountSchema.parse(normalizeTls(raw));
-  return { mode: "env", defaultAccount: "default", accounts: new Map([["default", account]]) };
+  return {
+    mode: "env",
+    defaultAccount: "default",
+    accounts: new Map([["default", account]]),
+    limits: { smtp_per_minute: 10, imap_ops_per_second: 100 },
+  };
 }
 
 // Lädt und validiert die TOML-Config-Datei, prüft Datei-Permissions (0600 empfohlen).
@@ -87,7 +93,13 @@ function loadFromFile(path: string): ConfigStore {
   }
   // biome-ignore lint/style/noNonNullAssertion: zod validates accounts min(1)
   const defaultAccount = parsed.default_account ?? parsed.accounts[0]!.name;
-  return { mode: "config-file", defaultAccount, accounts, configPath: path };
+  return {
+    mode: "config-file",
+    defaultAccount,
+    accounts,
+    limits: parsed.limits ?? { smtp_per_minute: 10, imap_ops_per_second: 100 },
+    configPath: path,
+  };
 }
 
 // Haupteinstieg: Env hat Vorrang, sonst Config-File. Wirft, wenn keins vorhanden.
