@@ -1,6 +1,6 @@
 // Bulk-MOVE über mehrere UIDs
 import { z } from "zod";
-import { ImapProtocolError, MailboxNotFoundError } from "../../lib/errors.js";
+import { MailboxNotFoundError } from "../../lib/errors.js";
 import { defineTool } from "../_types.js";
 
 export default defineTool({

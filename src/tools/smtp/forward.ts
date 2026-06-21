@@ -1,5 +1,4 @@
 import type nodemailer from "nodemailer";
-import type Mail from "nodemailer/lib/mailer/index.js";
 // Weiterleiten (Original quoted oder als Attachment) + Sent-Ablage
 import { z } from "zod";
 import { MailboxNotFoundError, SmtpRelayError, UidNotFoundError } from "../../lib/errors.js";

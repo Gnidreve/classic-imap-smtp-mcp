@@ -12,8 +12,6 @@ export default defineTool({
   handler: async (input, ctx) => {
     const accountName = ctx.resolveAccount(input.account);
 
-    const accConfig = ctx.config.accounts.get(accountName);
-
     // IMAP health
     let imapOk = false;
     let imapLatencyMs: number | undefined;

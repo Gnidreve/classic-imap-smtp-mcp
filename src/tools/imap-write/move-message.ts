@@ -1,6 +1,6 @@
 // Mail verschieben (MOVE, Fallback COPY+EXPUNGE)
 import { z } from "zod";
-import { ImapProtocolError, MailboxNotFoundError, UidNotFoundError } from "../../lib/errors.js";
+import { ImapProtocolError, MailboxNotFoundError } from "../../lib/errors.js";
 import { defineTool } from "../_types.js";
 
 export default defineTool({
@@ -29,7 +29,7 @@ export default defineTool({
       if (result && result.uidMap) {
         targetUid = result.uidMap.get(input.uid);
       }
-    } catch (err) {
+    } catch (_err) {
       // Fallback: COPY + EXPUNGE via mailboxClose
       try {
         const copyResult = await client.messageCopy(input.uid, input.toMailbox);
