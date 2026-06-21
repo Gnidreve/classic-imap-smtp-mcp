@@ -1,6 +1,6 @@
 // Mail in Folder schreiben (APPEND, Drafts/Import)
 import { z } from "zod";
-import { MailboxNotFoundError } from "../../lib/errors.js";
+import { ImapProtocolError } from "../../lib/errors.js";
 import { defineTool } from "../_types.js";
 
 export default defineTool({

@@ -22,7 +22,7 @@ export default defineTool({
 
     try {
       await client.messageDelete(input.uid);
-    } catch (err) {
+    } catch (_err) {
       throw new UidNotFoundError(input.uid, input.mailbox);
     }
 
@@ -32,7 +32,7 @@ export default defineTool({
       try {
         await client.mailboxClose();
         expunged = true;
-      } catch (err) {
+      } catch (_err) {
         throw new ImapProtocolError(`Failed to expunge after delete: ${err}`);
       }
     }
