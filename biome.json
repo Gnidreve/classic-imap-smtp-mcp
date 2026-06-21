@@ -16,7 +16,7 @@
   },
   "overrides": [
     {
-      "include": ["pnpm-lock.yaml"],
+      "files": { "include": ["pnpm-lock.yaml"] },
       "linter": { "enabled": false },
       "formatter": { "enabled": false }
     }
