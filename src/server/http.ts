@@ -40,7 +40,10 @@ export async function runHttp(
 
   const connectServer = async (transport: HttpTransport): Promise<void> => {
     const server = createServer();
+    let closing = false;
     transport.onclose = () => {
+      if (closing) return;
+      closing = true;
       const sessionId = transport.sessionId;
       if (sessionId) transports.delete(sessionId);
       server.close().catch((err) => logger.warn({ err }, "Error closing MCP server session"));
