@@ -3,7 +3,13 @@ import { readFileSync, statSync } from "node:fs";
 import { parse as parseToml } from "smol-toml";
 import { ConfigError, PermissionError } from "../lib/errors.js";
 import { detectProvider } from "./providers.js";
-import { type AccountConfig, type FileConfig, type LimitsConfig, accountSchema, fileConfigSchema } from "./schema.js";
+import {
+  type AccountConfig,
+  type FileConfig,
+  type LimitsConfig,
+  accountSchema,
+  fileConfigSchema,
+} from "./schema.js";
 import { defaultConfigPath } from "./xdg.js";
 
 export interface ConfigStore {
