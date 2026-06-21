@@ -1,0 +1,12 @@
+.git
+.gitattributes
+.gitignore
+.github
+.hooks
+.vscode
+test
+docs
+README.md
+LICENSE
+node_modules
+dist
