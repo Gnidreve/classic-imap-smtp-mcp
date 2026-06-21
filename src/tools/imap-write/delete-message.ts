@@ -33,7 +33,7 @@ export default defineTool({
         await client.mailboxClose();
         expunged = true;
       } catch (_err) {
-        throw new ImapProtocolError(`Failed to expunge after delete: ${err}`);
+        throw new ImapProtocolError(`Failed to expunge after delete: ${_err}`);
       }
     }
 
