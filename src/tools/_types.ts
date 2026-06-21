@@ -35,7 +35,6 @@ export interface ToolContext {
 
 // Infer the input type from a Zod schema
 type InferInput<T extends ZodTypeAny> = z.input<T>;
-type InferOutput<T extends ZodTypeAny> = z.output<T>;
 
 export interface ToolDefinition<TInputSchema extends ZodTypeAny = ZodTypeAny, TOutput = unknown> {
   name: string;

@@ -32,7 +32,7 @@ export default defineTool({
         ...(status.uidNext !== undefined ? { uidNext: Number(status.uidNext) } : {}),
         ...(status.uidValidity !== undefined ? { uidValidity: Number(status.uidValidity) } : {}),
       };
-    } catch (err) {
+    } catch (_err) {
       throw new MailboxNotFoundError(input.mailbox);
     }
   },

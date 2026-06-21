@@ -177,7 +177,7 @@ async function handleInit(_logger: ReturnType<typeof createLogger>): Promise<voi
 
 async function handleListTools(
   options: Parameters<typeof resolveActiveTools>[1],
-  logger: ReturnType<typeof createLogger>,
+  _logger: ReturnType<typeof createLogger>,
 ): Promise<void> {
   const active = resolveActiveTools(ALL_TOOLS, options);
   const lines: string[] = [];
