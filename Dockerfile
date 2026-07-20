@@ -1,5 +1,5 @@
 # Production image for Phase 4: HTTP/SSE-capable MCP runtime in a container.
-FROM node:20.20.2-alpine AS build
+FROM node:22.14.0-alpine AS build
 WORKDIR /app
 COPY package.json pnpm-lock.yaml* ./
 RUN corepack enable && corepack prepare pnpm@10.12.4 --activate && pnpm install --frozen-lockfile
@@ -7,7 +7,7 @@ COPY . .
 RUN pnpm build
 
 # Use tini as PID 1 to reap zombie processes
-FROM node:20.20.2-alpine
+FROM node:22.14.0-alpine
 RUN apk add --no-cache tini curl
 WORKDIR /app
 ENV NODE_ENV=production
