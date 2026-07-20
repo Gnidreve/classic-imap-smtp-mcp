@@ -4,7 +4,7 @@
 
 This document outlines the planned development path for `@gnidreve/classic-imap-smtp-mcp` from its current state toward a stable 1.0.0 release.
 
-> **Current version:** [v0.3.2](https://www.npmjs.com/package/@gnidreve/classic-imap-smtp-mcp) — all 36 core tools implemented, live on npm, CI/CD running.
+> **Current version:** [v0.6.0](https://www.npmjs.com/package/@gnidreve/classic-imap-smtp-mcp) — single-account env-only config, 32 tools, live on npm, CI/CD running.
 
 ## Vision
 
@@ -18,6 +18,7 @@ A classic IMAP/SMTP MCP server that does everything a good mail client does — 
 | 1 – Requirements | — | ✅ Done — scoped all phases |
 | 2 – Project Structure | — | ✅ Done — scaffolded |
 | 3 – Core Implementation | **0.3.x** | ✅ Done — 36 tools, connections, auth, CI/CD, npm-published |
+| — Config Simplification | **0.6.0** | ✅ Done — removed multi-account TOML config, env-only, 32 tools |
 | **4 – Docker Packaging** | **0.4.x** | Container wrapper with SSE transport as an alternative to stdio |
 | **5 – Security Audits** | **0.5.x** | Automated security scanning, published publicly in the repository |
 | **6 – IMAP IDLE Evaluation** | **0.6.x** | Research phase: event-driven IMAP IDLE and its role in an MCP context |

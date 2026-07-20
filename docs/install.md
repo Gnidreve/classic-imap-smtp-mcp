@@ -2,7 +2,7 @@
 
 <a href="../README.md#-documentation-index">← Back to Index</a>
 
-## Quick Start (Single Account)
+## Quick Start
 
 > [!TIP]
 > For Gmail, Outlook, iCloud, Fastmail, Posteo, mailbox.org, GMX, web.de, Yahoo, and ProtonMail Bridge, `USERNAME` + `PASSWORD` is all you need — hosts are auto-detected.
@@ -45,13 +45,7 @@ claude mcp add mail \
 
 See [`docs/clients.md`](clients.md) for Cursor, Windsurf, VS Code, and other client configurations.
 
-## Multi-Account Setup
-
-See [`docs/config.md`](config.md) for config file and multi-account setup.
-
 ## Docker / HTTP Deployment
-
-Phase 4 adds a container-friendly transport mode:
 
 ```bash
 docker build -t classic-imap-smtp-mcp .

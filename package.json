@@ -1,6 +1,6 @@
 {
   "name": "@gnidreve/classic-imap-smtp-mcp",
-  "version": "0.4.0",
+  "version": "0.6.0",
   "description": "A complete classic IMAP/SMTP MCP server. Everything a good mail client does — no OAuth, no cloud lock-in, no scope creep.",
   "type": "module",
   "license": "MIT",

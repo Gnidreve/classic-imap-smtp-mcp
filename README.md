@@ -11,7 +11,7 @@
 
 ---
 
-**classic-imap-smtp-mcp** connects any IMAP/SMTP mailbox to an AI assistant via the [Model Context Protocol](https://modelcontextprotocol.io). It runs locally, supports multiple accounts, and provides 36 tools for reading, writing, and managing email — nothing more, nothing less.
+**classic-imap-smtp-mcp** connects any IMAP/SMTP mailbox to an AI assistant via the [Model Context Protocol](https://modelcontextprotocol.io). It runs locally and provides 32 tools for reading, writing, and managing email — nothing more, nothing less.
 
 It can run either over classic `stdio` for local MCP clients or over HTTP with Streamable MCP plus a legacy SSE compatibility endpoint for container deployments.
 
@@ -35,19 +35,16 @@ export PASSWORD=your-app-password
 ```
 
 > [!TIP]
-> For most providers (Gmail, Outlook, iCloud, etc.) that's all you need — IMAP/SMTP hosts are auto-detected. If you need custom hosts or want to avoid collisions, see [`docs/config.md`](docs/config.md).
+> For most providers (Gmail, Outlook, iCloud, etc.) that's all you need — IMAP/SMTP hosts are auto-detected. See [`docs/config.md`](docs/config.md) for all available options.
 
 Full installation instructions: [`docs/install.md`](docs/install.md)
-
-> [!NOTE]
-> With multiple accounts, each tool accepts an optional `account` parameter. Defaults to the account named in `default_account`.
 
 > [!NOTE]
 > `--safe` and `--readonly` are combinable (`--readonly` is stricter and wins).
 > `--no-imap` and `--no-smtp` together produce an empty server — this aborts at startup (almost certainly a config mistake).
 
 > [!TIP]
-> Wildcards match by prefix: `imap_*`, `smtp_*`, `account_*`, `meta_*`, or finer `imap_delete_*`, `imap_bulk_*`, `imap_get_*`.
+> Wildcards match by prefix: `imap_*`, `smtp_*`, `meta_*`, or finer `imap_delete_*`, `imap_bulk_*`, `imap_get_*`.
 
 ---
 
@@ -56,7 +53,7 @@ Full installation instructions: [`docs/install.md`](docs/install.md)
 ### 🚀 Getting Started
 
 - **[Installation](docs/install.md)** — Set up the server in 60 seconds with `npx` and your mailbox credentials
-- **[Configuration](docs/config.md)** — Environment variables, multi-account via TOML, CLI flags & tool filters
+- **[Configuration](docs/config.md)** — Environment variables, CLI flags & tool filters
 
 ### 📖 Reference
 
@@ -85,7 +82,7 @@ Full installation instructions: [`docs/install.md`](docs/install.md)
 
 ## Why this exists
 
-Existing MCP mail servers are either incomplete, do too much (calendar, AI triage, scheduling), or lack features like multi-account, folder management, and fine-grained tool control. This project does one thing well: **classic IMAP/SMTP** — and makes every tool available through conditional registration so you control exactly what your AI assistant can do.
+Existing MCP mail servers are either incomplete, do too much (calendar, AI triage, scheduling), or lack features like folder management and fine-grained tool control. This project does one thing well: **classic IMAP/SMTP** — and makes every tool available through conditional registration so you control exactly what your AI assistant can do.
 
 ---
 

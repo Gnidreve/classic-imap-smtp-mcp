@@ -8,6 +8,6 @@ Please do **not** report security vulnerabilities as public issues. Use GitHub S
 
 ## Notes
 
-- Credentials are stored in plain text in the config file (permission 0600 is enforced). Recommendation: use app passwords.
+- Credentials are passed via environment variables (not stored in files). Recommendation: use app passwords.
 - All connections use TLS (implicit or STARTTLS). `verify_tls=false` is intended for trusted internal servers only.
 - Credentials are never logged (sanitizer enforced).

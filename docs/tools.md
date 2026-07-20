@@ -2,7 +2,7 @@
 
 <a href="../README.md#-documentation-index">← Back to Index</a> · <a href="config.md">← Previous: Configuration</a>
 
-classic-imap-smtp-mcp registers between 16 (`--readonly`) and 36 (default) tools depending on mode and flags.
+classic-imap-smtp-mcp registers between 15 (`--readonly`) and 32 (default) tools depending on mode and flags.
 
 ## IMAP — Read (12 tools)
 
@@ -59,15 +59,6 @@ classic-imap-smtp-mcp registers between 16 (`--readonly`) and 36 (default) tools
 SMTP only delivers — it does not place a copy in your "Sent" folder. Email clients handle this by writing a copy via IMAP after sending. The send tools do this automatically (`save_to_sent`, default `true`). The Sent folder is found via the `\Sent` special-use flag (falls back to common names, or explicit via `sent_mailbox`).
 
 **Important:** Send and save are separate. If sending succeeds but the save fails (e.g. Sent folder missing), the email was still delivered. The tool reports success with `saved_to_sent: false` + details. There is **no outbox or retry queue** — a failed send is reported immediately, not queued.
-
-## Account Management (4 tools)
-
-| Tool | What it does |
-|---|---|
-| `account_list` | List configured accounts (credentials masked) |
-| `account_add` | Add account to config |
-| `account_update` | Modify existing account (e.g. new app password) |
-| `account_delete` | Remove account from config |
 
 ## Meta — Server Introspection (2 tools)
 

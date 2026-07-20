@@ -2,12 +2,12 @@
 
 <a href="../README.md#-documentation-index">← Back to Index</a> · <a href="install.md">← Previous: Installation</a>
 
-## Method 1: Environment Variables (Single Account)
+## Environment Variables (Single Account)
 
-Simplest approach. Covers 90 % of users.
+classic-imap-smtp-mcp is configured **exclusively** through environment variables.
 
 > [!NOTE]
-> This is the **new simplified** naming for v0.3.2+. The old `CLASSIC_IMAP_SMTP_*` names still work as a fallback. See [Legacy Names](#legacy-names) below.
+> This is the **new simplified** naming. The old `CLASSIC_IMAP_SMTP_*` names still work as a fallback. See [Legacy Names](#legacy-names) below.
 
 | Variable | Required | Default | Description |
 |---|---|---|---|
@@ -36,7 +36,7 @@ export CLASSIC_PASSWORD=your-app-password
 
 ### Legacy Names
 
-The old `CLASSIC_IMAP_SMTP_*` env vars continue to work as a lowest-priority fallback:
+The old `CLASSIC_IMAP_SMTP_*` env vars continue to work as a fallback:
 
 | New Name | New Prefixed | Old Prefixed (Fallback) |
 |----------|-------------|------------------------|
@@ -51,49 +51,7 @@ The old `CLASSIC_IMAP_SMTP_*` env vars continue to work as a lowest-priority fal
 | `SMTP_TLS` | `CLASSIC_SMTP_TLS` | `CLASSIC_IMAP_SMTP_SMTP_TLS` |
 | `VERIFY_TLS` | `CLASSIC_VERIFY_TLS` | `CLASSIC_IMAP_SMTP_VERIFY_TLS` |
 
-**Resolution order for each variable:** `CLASSIC_<NAME>` → `CLASSIC_IMAP_SMTP_<OLD>` → `<NAME>` (`USER`/`PASS` as final bare fallback).
-
-## Method 2: Config File (Multi-Account)
-
-Path (XDG-compliant):
-- Linux/macOS: `~/.config/classic-imap-smtp-mcp/config.toml`
-- Windows: `%APPDATA%\classic-imap-smtp-mcp\config.toml`
-
-```toml
-default_account = "personal"
-
-[[accounts]]
-name = "personal"
-user = "you@gmail.com"
-pass = "your-app-password"
-from_name = "Your Name"
-# Host/port via provider auto-detect
-
-[[accounts]]
-name = "work"
-user = "you@company.com"
-pass = "another-app-password"
-imap_host = "imap.company.com"
-imap_port = 993
-smtp_host = "smtp.company.com"
-smtp_port = 587
-smtp_tls = "starttls"
-from_name = "You at Work"
-
-[[accounts]]
-name = "selfhosted"
-user = "me@mybox.tld"
-pass = "supersecret"
-imap_host = "mail.mybox.tld"
-smtp_host = "mail.mybox.tld"
-verify_tls = false  # self-signed certificates
-```
-
-With multiple accounts, each tool accepts an optional `account` parameter. Defaults to the account named in `default_account`.
-
-## Method 3: Hybrid Mode
-
-Environment variables override config file values. Useful for CI/container environments with base config from file and sensitive values from env.
+**Resolution order for each variable:** `CLASSIC_<NAME>` → `CLASSIC_IMAP_SMTP_<OLD>` → `<NAME>` → `<OLD>`.
 
 ---
 
@@ -106,7 +64,7 @@ classic-imap-smtp-mcp registers tools **conditionally at server start**. Unregis
 | Flag | Effect |
 |---|---|
 | `--safe` | Disable delete operations: `imap_delete_message`, `imap_expunge`, `imap_delete_mailbox` removed. Sending, moving, marking, drafts remain. |
-| `--readonly` | Read-only: all writing IMAP ops (STORE, MOVE, COPY, APPEND, folder CRUD) **and** SMTP send removed. `smtp_verify_connection` and `account_list` remain. |
+| `--readonly` | Read-only: all writing IMAP ops (STORE, MOVE, COPY, APPEND, folder CRUD) **and** SMTP send removed. `smtp_verify_connection` remains. |
 | `--no-imap` | All IMAP tools removed. |
 | `--no-smtp` | All SMTP tools removed. |
 
@@ -121,7 +79,7 @@ Two flags with **prefix wildcards** for surgical control:
 | `--allow-tools=<csv>` | Explicit tool allowlist — **overrides feature flags**. Recovers specific tools disabled by coarse flags. |
 | `--deny-tools=<csv>` | Explicit deny list — **wins over everything**, including `--allow-tools`. |
 
-Wildcards match by prefix: `imap_*`, `smtp_*`, `account_*`, `meta_*`, or finer `imap_delete_*`, `imap_bulk_*`, `imap_get_*`.
+Wildcards match by prefix: `imap_*`, `smtp_*`, `meta_*`, or finer `imap_delete_*`, `imap_bulk_*`, `imap_get_*`.
 
 **Cascade (coarse → fine, fine wins):**
 
@@ -140,9 +98,6 @@ npx @gnidreve/classic-imap-smtp-mcp --readonly --allow-tools=smtp_send
 # No SMTP, but allow just smtp_send
 npx @gnidreve/classic-imap-smtp-mcp --no-smtp --allow-tools=smtp_send
 
-# Everything except account management
-npx @gnidreve/classic-imap-smtp-mcp --deny-tools=account_*
-
 # All IMAP tools except delete variants
 npx @gnidreve/classic-imap-smtp-mcp --allow-tools=imap_* --deny-tools=imap_delete_*
 ```
@@ -154,7 +109,7 @@ npx @gnidreve/classic-imap-smtp-mcp --allow-tools=imap_* --deny-tools=imap_delet
 ```
 classic-imap-smtp-mcp [options]
 
-Run as MCP server over stdio (default subcommand).
+Run as MCP server over stdio (default).
 
 Options:
   --safe               Disable delete tools
@@ -163,16 +118,13 @@ Options:
   --no-smtp            Disable all SMTP tools
   --allow-tools=<list> Explicit tool allowlist (CSV, prefix wildcards)
   --deny-tools=<list>  Explicit deny list (CSV, prefix wildcards)
-  --account=<name>     Default account override
-  --config=<path>      Alternative config path
   --log-level=<level>  trace|debug|info|warn|error (default: info)
   --log-format=<fmt>   json|pretty (default: json)
   -h, --help           Show help
   -V, --version        Show version
 
 Subcommands:
-  init                 Write template config to XDG path
-  test [account]       Test IMAP+SMTP connection
+  test                 Test IMAP+SMTP connection
   list-tools           Dry-run: which tools would be registered?
 ```
 
@@ -183,9 +135,8 @@ Subcommands:
 - All connections use TLS (implicit or STARTTLS, per config)
 - Passwords are never logged
 - Recommendation: **app passwords** instead of account passwords (Gmail, Outlook, iCloud support this)
-- Config file should have `0600` permissions (classic-imap-smtp-mcp warns about overly open permissions)
 - Attachment downloads are capped at a configurable maximum size
-- `VERIFY_TLS=false` (or `CLASSIC_VERIFY_TLS=false`) is intended for self-signed internal servers only — logged as a warning
+- `VERIFY_TLS=false` is intended for self-signed internal servers only — logged as a warning
 
 ---
 

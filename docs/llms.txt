@@ -35,7 +35,7 @@ If a user asks you to "install classic-imap-smtp-mcp" or "set up mail in my Clau
 6. **Restart the client** so it picks up the new MCP server.
 7. **Verify** by asking the user to prompt "list my email folders" — this should trigger `imap_list_mailboxes`.
 
-If the user wants multiple accounts, instruct them to run `npx @gnidreve/classic-imap-smtp-mcp init` to scaffold the TOML config and then edit it. The env-var path is single-account only.
+classic-imap-smtp-mcp is single-account only, configured exclusively through environment variables.
 
 ---
 
@@ -127,7 +127,7 @@ File: workspace `.vscode/mcp.json` or user `settings.json` under the `mcp` key:
 
 ---
 
-## Full tool catalog (36 tools)
+## Full tool catalog (32 tools)
 
 Each tool's full Zod schema is exposed via `tools/list` in the MCP protocol. The summary below is enough to choose the right tool.
 
@@ -135,66 +135,57 @@ Each tool's full Zod schema is exposed via `tools/list` in the MCP protocol. The
 
 | Tool | Purpose | Key inputs |
 |---|---|---|
-| `imap_list_mailboxes` | Enumerate folders with special-use flags | `account?`, `subscribed_only?` |
-| `imap_status_mailbox` | Get counts without SELECT | `mailbox`, `account?` |
-| `imap_list_messages` | Paginated message list (envelope only) | `mailbox`, `page?`, `page_size?`, `account?` |
-| `imap_get_message` | Full parsed message + attachment metadata | `uid`, `mailbox`, `account?` |
-| `imap_get_message_headers` | Headers only | `uid`, `mailbox`, `account?` |
-| `imap_get_message_raw` | RFC-822 raw source | `uid`, `mailbox`, `account?` |
-| `imap_get_messages_bulk` | Up to N UIDs in one call | `uids[]`, `mailbox`, `account?` |
-| `imap_search` | Full RFC-3501 SEARCH builder | `mailbox`, `criteria` (structured), `account?` |
-| `imap_download_attachment` | Extract a specific MIME part | `uid`, `mailbox`, `part_id` or `filename`, `save_path?`, `account?` |
-| `imap_get_thread` | Reconstruct conversation via References | `uid`, `mailbox`, `account?` |
-| `imap_get_quota` | RFC-2087 quota info | `mailbox?`, `account?` |
-| `imap_check_capabilities` | List server CAPABILITY | `account?` |
+| `imap_list_mailboxes` | Enumerate folders with special-use flags | `subscribed_only?` |
+| `imap_status_mailbox` | Get counts without SELECT | `mailbox` |
+| `imap_list_messages` | Paginated message list (envelope only) | `mailbox`, `page?`, `page_size?` |
+| `imap_get_message` | Full parsed message + attachment metadata | `uid`, `mailbox` |
+| `imap_get_message_headers` | Headers only | `uid`, `mailbox` |
+| `imap_get_message_raw` | RFC-822 raw source | `uid`, `mailbox` |
+| `imap_get_messages_bulk` | Up to N UIDs in one call | `uids[]`, `mailbox` |
+| `imap_search` | Full RFC-3501 SEARCH builder | `mailbox`, `criteria` (structured) |
+| `imap_download_attachment` | Extract a specific MIME part | `uid`, `mailbox`, `part_id` or `filename`, `save_path?` |
+| `imap_get_thread` | Reconstruct conversation via References | `uid`, `mailbox` |
+| `imap_get_quota` | RFC-2087 quota info | `mailbox?` |
+| `imap_check_capabilities` | List server CAPABILITY | — |
 
 ### IMAP — Write
 
 | Tool | Purpose | Key inputs |
 |---|---|---|
-| `imap_mark_message` | STORE flags on/off | `uid`, `mailbox`, `add[]?`, `remove[]?`, `account?` |
-| `imap_bulk_mark` | Bulk STORE | `uids[]`, `mailbox`, `add[]?`, `remove[]?`, `account?` |
-| `imap_move_message` | MOVE (RFC 6851) | `uid`, `from_mailbox`, `to_mailbox`, `account?` |
-| `imap_copy_message` | COPY | `uid`, `from_mailbox`, `to_mailbox`, `account?` |
-| `imap_bulk_move` | Bulk MOVE | `uids[]`, `from_mailbox`, `to_mailbox`, `account?` |
-| `imap_append_message` | APPEND a message (drafts, import) | `mailbox`, `rfc822` or structured fields, `flags[]?`, `account?` |
-| `imap_expunge` | EXPUNGE | `mailbox`, `account?` |
-| `imap_delete_message` | STORE \Deleted, optional EXPUNGE | `uid`, `mailbox`, `expunge?`, `account?` |
+| `imap_mark_message` | STORE flags on/off | `uid`, `mailbox`, `add[]?`, `remove[]?` |
+| `imap_bulk_mark` | Bulk STORE | `uids[]`, `mailbox`, `add[]?`, `remove[]?` |
+| `imap_move_message` | MOVE (RFC 6851) | `uid`, `from_mailbox`, `to_mailbox` |
+| `imap_copy_message` | COPY | `uid`, `from_mailbox`, `to_mailbox` |
+| `imap_bulk_move` | Bulk MOVE | `uids[]`, `from_mailbox`, `to_mailbox` |
+| `imap_append_message` | APPEND a message (drafts, import) | `mailbox`, `rfc822` or structured fields, `flags[]?` |
+| `imap_expunge` | EXPUNGE | `mailbox` |
+| `imap_delete_message` | STORE \Deleted, optional EXPUNGE | `uid`, `mailbox`, `expunge?` |
 
 ### IMAP — Mailbox CRUD
 
 | Tool | Purpose | Key inputs |
 |---|---|---|
-| `imap_create_mailbox` | CREATE | `mailbox`, `account?` |
-| `imap_delete_mailbox` | DELETE | `mailbox`, `account?` |
-| `imap_rename_mailbox` | RENAME | `from`, `to`, `account?` |
-| `imap_subscribe_mailbox` | SUBSCRIBE | `mailbox`, `account?` |
-| `imap_unsubscribe_mailbox` | UNSUBSCRIBE | `mailbox`, `account?` |
+| `imap_create_mailbox` | CREATE | `mailbox` |
+| `imap_delete_mailbox` | DELETE | `mailbox` |
+| `imap_rename_mailbox` | RENAME | `from`, `to` |
+| `imap_subscribe_mailbox` | SUBSCRIBE | `mailbox` |
+| `imap_unsubscribe_mailbox` | UNSUBSCRIBE | `mailbox` |
 
 ### SMTP
 
 | Tool | Purpose | Key inputs |
 |---|---|---|
-| `smtp_send` | Send a new message | `to[]`, `subject`, `text?`, `html?`, `cc[]?`, `bcc[]?`, `attachments[]?`, `inline_images[]?`, `headers?`, `save_to_sent?` (default true), `sent_mailbox?`, `account?` |
-| `smtp_reply` | Reply with correct threading | `original_uid`, `original_mailbox`, `text?`, `html?`, `reply_all?`, `include_original?`, `save_to_sent?`, `sent_mailbox?`, `account?` |
-| `smtp_forward` | Forward a message | `original_uid`, `original_mailbox`, `to[]`, `text?`, `as_attachment?`, `save_to_sent?`, `sent_mailbox?`, `account?` |
-| `smtp_verify_connection` | Health check | `account?` |
-| `smtp_send_raw` | Send a pre-formed RFC-822 | `rfc822`, `save_to_sent?`, `sent_mailbox?`, `account?` |
-
-### Account-Management
-
-| Tool | Purpose | Key inputs |
-|---|---|---|
-| `account_list` | List configured accounts (masked) | — |
-| `account_add` | Add a new account to config | `name`, `user`, `pass`, `imap_host?`, `smtp_host?`, ... |
-| `account_update` | Modify an existing account (e.g. new app-password) | `name`, fields to change |
-| `account_delete` | Remove an account from config | `name` |
+| `smtp_send` | Send a new message | `to[]`, `subject`, `text?`, `html?`, `cc[]?`, `bcc[]?`, `attachments[]?`, `inline_images[]?`, `headers?`, `save_to_sent?` (default true), `sent_mailbox?` |
+| `smtp_reply` | Reply with correct threading | `original_uid`, `original_mailbox`, `text?`, `html?`, `reply_all?`, `include_original?`, `save_to_sent?`, `sent_mailbox?` |
+| `smtp_forward` | Forward a message | `original_uid`, `original_mailbox`, `to[]`, `text?`, `as_attachment?`, `save_to_sent?`, `sent_mailbox?` |
+| `smtp_verify_connection` | Health check | — |
+| `smtp_send_raw` | Send a pre-formed RFC-822 | `rfc822`, `save_to_sent?`, `sent_mailbox?` |
 
 ### Meta — server introspection
 
 | Tool | Purpose | Key inputs |
 |---|---|---|
-| `meta_health` | IMAP + SMTP reachability, latency, capabilities | `account?` |
+| `meta_health` | IMAP + SMTP reachability, latency, capabilities | — |
 | `meta_server_info` | Active tools, active mode, version | — |
 
 ---
@@ -205,7 +196,7 @@ All switches are CLI args (never env vars). Tools are registered conditionally a
 
 **Four feature flags (coarse):**
 - `--safe` — removes delete tools (`imap_delete_message`, `imap_expunge`, `imap_delete_mailbox`); sending/moving/marking still work
-- `--readonly` — read-only: all writing IMAP ops + SMTP send removed; `smtp_verify_connection` and `account_list` remain
+- `--readonly` — read-only: all writing IMAP ops + SMTP send removed; `smtp_verify_connection` remains
 - `--no-imap` — removes all IMAP tools
 - `--no-smtp` — removes all SMTP tools
 
@@ -215,11 +206,11 @@ All switches are CLI args (never env vars). Tools are registered conditionally a
 - `--allow-tools=<csv>` — explicitly enable tools; **overrides feature flags** (brings tools back)
 - `--deny-tools=<csv>` — explicitly remove tools; **wins over everything**, including allow
 
-Wildcards: `imap_*`, `smtp_*`, `account_*`, `meta_*`, `imap_delete_*`, `imap_bulk_*`, etc.
+Wildcards: `imap_*`, `smtp_*`, `meta_*`, `imap_delete_*`, `imap_bulk_*`, etc.
 
 **Cascade (coarse → fine, fine wins):** feature flags set the base → `--allow-tools` overrides them → `--deny-tools` has the final word.
 
-Examples: `--readonly --allow-tools=smtp_send` (read-only but sending allowed) · `--deny-tools=account_*` (no account management) · `--allow-tools=imap_* --deny-tools=imap_delete_*` (all IMAP except deletes).
+Examples: `--readonly --allow-tools=smtp_send` (read-only but sending allowed) · `--allow-tools=imap_* --deny-tools=imap_delete_*` (all IMAP except deletes).
 
 ---
 
@@ -236,7 +227,7 @@ classic-imap-smtp-mcp follows the standard MCP tool-call contract. Pseudo-flow:
 
 - **UIDs are per-mailbox.** Always pass `mailbox` together with `uid`.
 - **Folder names are server-native.** Use `imap_list_mailboxes` first; do not hard-code names like "Sent" or "Trash" — providers vary (`[Gmail]/Sent Mail`, `INBOX.Trash`, etc.). Special-use flags from `imap_list_mailboxes` are the safe way to find them.
-- **`account` is optional** when a default account is configured. When it's set in the config, omit `account` unless the user explicitly says otherwise.
+- **No `account` parameter exists.** classic-imap-smtp-mcp is single-account only; all tools operate on the configured account.
 - **Attachments**: `imap_get_message` returns metadata only by default. To download a binary attachment, follow up with `imap_download_attachment`.
 - **Threading**: `smtp_reply` does the right thing automatically — no need to manually construct `In-Reply-To`/`References` headers.
 - **Sent copies**: send tools auto-append a copy to the Sent folder (`save_to_sent`, default true) — found via the `\Sent` special-use flag. Send and save are separate: if sending succeeds but the Sent-append fails, the result reports `savedToSent: false` plus `sentSaveError`, and the mail is still sent. There is no outbox/retry queue — a failed send is reported synchronously as `SMTP_RELAY_ERROR`.

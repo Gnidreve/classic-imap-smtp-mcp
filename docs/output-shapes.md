@@ -356,38 +356,6 @@ Gemeinsame Sent-Ablage-Felder (bei `smtp_send`, `smtp_reply`, `smtp_forward`, `s
 
 ---
 
-## Account-Management
-
-### `account_list`
-```ts
-{
-  defaultAccount?: string;
-  accounts: Array<{
-    name: string;
-    user: string;            // Mail-Adresse
-    imapHost: string;
-    smtpHost: string;
-    // NEVER includes pass — per sanitizer
-  }>;
-  mode: "env" | "config-file";
-}
-```
-
-### `account_add`
-```ts
-{ name: string; created: true; configPath: string }
-```
-
-### `account_update`
-```ts
-{ name: string; updated: true; changedFields: string[] }
-```
-
-### `account_delete`
-```ts
-{ name: string; deleted: true }
-```
-
 ---
 
 ## Meta — Server-Introspektion
