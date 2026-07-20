@@ -41,16 +41,14 @@ export default defineTool({
     new: z.boolean().optional().describe("New (unseen + recent)"),
     old: z.boolean().optional().describe("Old (not recent)"),
     recent: z.boolean().optional().describe("Recent"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const mb = await client.mailboxOpen(input.mailbox);
     if (!mb) throw new MailboxNotFoundError(input.mailbox);
 
-    const { mailbox: _mb, account: _acct, ...searchCriteria } = input;
+    const { mailbox: _mb, ...searchCriteria } = input;
     const query = buildSearchQuery(
       searchCriteria as import("../../lib/search-builder.js").SearchCriteria,
     );

@@ -17,11 +17,9 @@ export default defineTool({
     uid: z.number().int().positive().describe("Message UID"),
     partId: z.string().min(1).describe("MIME part ID (e.g. '1', '2.1')"),
     savePath: z.string().optional().describe("Local path to save the attachment"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const mb = await client.mailboxOpen(input.mailbox);
     if (!mb) throw new MailboxNotFoundError(input.mailbox);

@@ -45,15 +45,12 @@ export default defineTool({
       )
       .optional()
       .describe("Attachments"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
     saveToSent: z.boolean().default(true).describe("Save copy to Sent folder (default: true)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const transport = await ctx.smtp.acquire(accountName);
+    const transport = await ctx.smtp.acquire();
 
-    // biome-ignore lint/style/noNonNullAssertion: resolveAccount guarantees existence
-    const accConfig = ctx.config.accounts.get(accountName)!;
+    const accConfig = ctx.config.account;
 
     const mailOptions: nodemailer.SendMailOptions = {
       from: accConfig.from_name ? `"${accConfig.from_name}" <${accConfig.user}>` : accConfig.user,
@@ -83,7 +80,7 @@ export default defineTool({
 
     if (input.saveToSent) {
       try {
-        const imapClient = await ctx.imap.acquire(accountName);
+        const imapClient = await ctx.imap.acquire();
         const sentFolder = await resolveSentFolder(imapClient);
         if (sentFolder) {
           sentMailbox = sentFolder;

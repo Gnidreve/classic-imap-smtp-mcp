@@ -15,11 +15,9 @@ export default defineTool({
       .optional()
       .describe("Optional flags to set (e.g. ['\\Seen', '\\Drafts'])"),
     date: z.string().optional().describe("Optional internal date (ISO 8601 or imap date-time)"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const normalizedFlags = input.flags?.map((f) => (f.startsWith("\\") ? f : `\\${f}`));
     const internalDate = input.date ? new Date(input.date) : undefined;

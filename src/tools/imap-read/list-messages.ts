@@ -35,11 +35,9 @@ export default defineTool({
       .describe("Messages per page (default: 50, max: 500)"),
     sort: z.enum(["date", "subject", "from", "size"]).optional().describe("Sort field"),
     sortOrder: z.enum(["asc", "desc"]).default("desc").describe("Sort order (default: desc)"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const mailbox = await client.mailboxOpen(input.mailbox);
     if (!mailbox) {

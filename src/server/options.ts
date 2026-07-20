@@ -7,8 +7,6 @@ export interface ResolvedOptions {
   transport: "stdio" | "http";
   allowTools?: string[];
   denyTools?: string[];
-  account?: string;
-  configPath?: string;
   logLevel: string;
   logFormat: "json" | "pretty";
   httpHost: string;
@@ -21,8 +19,7 @@ export interface ResolvedOptions {
 }
 
 export interface ParsedArgs {
-  subcommand: "init" | "test" | "list-tools" | undefined;
-  subcommandArg: string | undefined;
+  subcommand: "test" | "list-tools" | undefined;
   options: ResolvedOptions;
   help: boolean;
   version: boolean;
@@ -46,18 +43,14 @@ export function parseArgs(argv: string[]): ParsedArgs {
     httpTimeoutMs: 30_000,
   };
   let subcommand: ParsedArgs["subcommand"];
-  let subcommandArg: string | undefined;
   let help = false;
   let version = false;
 
   for (let i = 0; i < argv.length; i++) {
     // biome-ignore lint/style/noNonNullAssertion: loop bound ensures i < argv.length
     const arg = argv[i]!;
-    if (arg === "init" || arg === "test" || arg === "list-tools") {
+    if (arg === "test" || arg === "list-tools") {
       subcommand = arg;
-      if (arg === "test" && argv[i + 1] && !argv[i + 1]?.startsWith("-")) {
-        subcommandArg = argv[++i];
-      }
     } else if (arg === "--safe") opts.safe = true;
     else if (arg === "--readonly") opts.readonly = true;
     else if (arg === "--no-imap") opts.noImap = true;
@@ -67,8 +60,6 @@ export function parseArgs(argv: string[]): ParsedArgs {
     else if (arg === "-V" || arg === "--version") version = true;
     else if (arg.startsWith("--allow-tools=")) opts.allowTools = csv(arg);
     else if (arg.startsWith("--deny-tools=")) opts.denyTools = csv(arg);
-    else if (arg.startsWith("--account=")) opts.account = val(arg);
-    else if (arg.startsWith("--config=")) opts.configPath = val(arg);
     else if (arg.startsWith("--log-level=")) opts.logLevel = val(arg);
     else if (arg.startsWith("--log-format="))
       opts.logFormat = val(arg) === "pretty" ? "pretty" : "json";
@@ -82,7 +73,7 @@ export function parseArgs(argv: string[]): ParsedArgs {
       opts.healthEndpoint = envPath(val(arg), "/healthz");
   }
 
-  return { subcommand, subcommandArg, options: opts, help, version };
+  return { subcommand, options: opts, help, version };
 }
 
 const val = (arg: string) => arg.slice(arg.indexOf("=") + 1);

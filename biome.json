@@ -3,12 +3,14 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "preset": "recommended",
-      "security": "on",
+      "recommended": true,
+      "security": {
+        "recommended": true
+      },
       "suspicious": { "noConsole": "error" }
     }
   },
-  "assist": {
+  "organizeImports": {
     "enabled": false
   },
   "formatter": {

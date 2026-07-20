@@ -1,8 +1,7 @@
-// SMTP-Transport-Pool: nodemailer-Transport pro Account, gepoolt (max 1 Connection, 100 Msg/Connection).
+// SMTP-Transport-Pool: nodemailer-Transport, gepoolt (max 1 Connection, 100 Msg/Connection).
 // Rate-Limiting: 10 Messages/Minute (Token-Bucket).
 import nodemailer, { type Transporter } from "nodemailer";
 import type { ConfigStore } from "../config/loader.js";
-import type { AccountConfig } from "../config/schema.js";
 import { AuthError, RateLimitError, SmtpRelayError } from "../lib/errors.js";
 import type { Logger } from "../server/logging.js";
 
@@ -14,9 +13,8 @@ interface RateLimitBucket {
 }
 
 export class SmtpPool {
-  private transports = new Map<string, Transporter>();
-  private rateBuckets = new Map<string, RateLimitBucket>();
-
+  private transport: Transporter | null = null;
+  private rateBucket: RateLimitBucket = { tokens: 10, lastRefill: Date.now() };
   private rateLimitPerMinute: number;
 
   constructor(
@@ -26,45 +24,36 @@ export class SmtpPool {
     this.rateLimitPerMinute = config.limits?.smtp_per_minute ?? 10;
   }
 
-  // Liefert einen nodemailer-Transporter für den Account.
-  async acquire(account: string): Promise<Transporter> {
+  // Liefert einen nodemailer-Transporter.
+  async acquire(): Promise<Transporter> {
     // Rate-Limit prüfen
-    this.checkRateLimit(account);
+    this.checkRateLimit();
 
-    const existing = this.transports.get(account);
-    if (existing) return existing;
+    if (this.transport) return this.transport;
 
-    const accConfig = this.config.accounts.get(account);
-    if (!accConfig) {
-      throw new SmtpRelayError(`Account ${account} not configured`);
-    }
-
-    const transport = await this.createTransport(accConfig);
-    this.transports.set(account, transport);
-    return transport;
+    this.transport = await this.createTransport();
+    return this.transport;
   }
 
-  private checkRateLimit(account: string): void {
+  private checkRateLimit(): void {
     const limit = this.rateLimitPerMinute;
-    const bucket = this.rateBuckets.get(account) ?? { tokens: limit, lastRefill: Date.now() };
-
-    // Refill tokens
     const now = Date.now();
-    const elapsed = now - bucket.lastRefill;
+    const elapsed = now - this.rateBucket.lastRefill;
+
     if (elapsed >= RATE_LIMIT_WINDOW_MS) {
-      bucket.tokens = limit;
-      bucket.lastRefill = now;
+      this.rateBucket.tokens = limit;
+      this.rateBucket.lastRefill = now;
     }
 
-    if (bucket.tokens <= 0) {
-      throw new RateLimitError(`SMTP rate limit (${limit}/minute) reached for account ${account}`);
+    if (this.rateBucket.tokens <= 0) {
+      throw new RateLimitError(`SMTP rate limit (${limit}/minute) reached`);
     }
 
-    bucket.tokens--;
-    this.rateBuckets.set(account, bucket);
+    this.rateBucket.tokens--;
   }
 
-  private async createTransport(acc: AccountConfig): Promise<Transporter> {
+  private async createTransport(): Promise<Transporter> {
+    const acc = this.config.account;
     try {
       const tlsOpts: Record<string, unknown> = {};
       if (!acc.verify_tls) {
@@ -72,7 +61,7 @@ export class SmtpPool {
       }
 
       const transporter = nodemailer.createTransport({
-        // biome-ignore lint/style/noNonNullAssertion: config validated at load
+        // biome-ignore lint/style/noNonNullAssertion: validated at load
         host: acc.smtp_host!,
         port: acc.smtp_port,
         secure: acc.smtp_tls === "implicit",
@@ -81,14 +70,13 @@ export class SmtpPool {
           pass: acc.pass,
         },
         tls: tlsOpts,
-        // STARTTLS: wird von nodemailer automatisch bei secure=false und Port 587/25 verwendet
         pool: true,
         maxConnections: 1,
         maxMessages: 100,
         logger: false,
       });
 
-      this.logger.info({ account: acc.name }, "SMTP transport created");
+      this.logger.info("SMTP transport created");
       return transporter;
     } catch (err) {
       const error = err as Error;
@@ -100,14 +88,14 @@ export class SmtpPool {
   }
 
   async closeAll(): Promise<void> {
-    for (const [account, transport] of this.transports) {
+    if (this.transport) {
       try {
-        transport.close();
+        this.transport.close();
       } catch (err) {
-        this.logger.warn({ account, err }, "Error closing SMTP transport");
+        this.logger.warn({ err }, "Error closing SMTP transport");
       }
+      this.transport = null;
     }
-    this.transports.clear();
-    this.rateBuckets.clear();
+    this.rateBucket = { tokens: 10, lastRefill: Date.now() };
   }
 }

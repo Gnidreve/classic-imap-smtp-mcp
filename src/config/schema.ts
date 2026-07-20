@@ -1,4 +1,4 @@
-// Zod-Schemas für Account, Config-File und Env-Vars. Validiert beim Laden.
+// Zod-Schemas für Account und Limits. Validiert beim Laden aus Env-Vars.
 import { z } from "zod";
 
 export const tlsModeSchema = z.union([
@@ -28,10 +28,3 @@ export const limitsSchema = z.object({
   imap_ops_per_second: z.number().int().positive().default(100),
 });
 export type LimitsConfig = z.infer<typeof limitsSchema>;
-
-export const fileConfigSchema = z.object({
-  default_account: z.string().optional(),
-  limits: limitsSchema.default({ smtp_per_minute: 10, imap_ops_per_second: 100 }),
-  accounts: z.array(accountSchema).min(1),
-});
-export type FileConfig = z.infer<typeof fileConfigSchema>;

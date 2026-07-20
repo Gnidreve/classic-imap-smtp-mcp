@@ -12,11 +12,9 @@ export default defineTool({
     uids: z.array(z.number().int().positive()).min(1).max(500).describe("Message UIDs"),
     flags: z.array(z.string()).min(1).describe("Flags to set/add/remove"),
     mode: z.enum(["set", "add", "remove"]).default("set").describe("STORE mode"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const mb = await client.mailboxOpen(input.mailbox);
     if (!mb) throw new MailboxNotFoundError(input.mailbox);

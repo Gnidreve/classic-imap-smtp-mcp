@@ -9,11 +9,9 @@ export default defineTool({
   category: "imap-read",
   inputSchema: z.object({
     mailbox: z.string().min(1).describe("Mailbox path (e.g. INBOX)"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     try {
       const status = await client.status(input.mailbox, {

@@ -1,4 +1,4 @@
-// Zentraler Tool-Index: importiert alle 36 Tool-Definitionen und exportiert sie als flaches Array. Einzige Stelle, die jedes Tool kennt.
+// Zentraler Tool-Index: importiert alle 32 Tool-Definitionen und exportiert sie als flaches Array. Einzige Stelle, die jedes Tool kennt.
 import type { ToolDefinition } from "./_types.js";
 
 import checkCapabilities from "./imap-read/check-capabilities.js";
@@ -39,12 +39,6 @@ import smtpSendRaw from "./smtp/send-raw.js";
 import smtpSend from "./smtp/send.js";
 import smtpVerifyConnection from "./smtp/verify-connection.js";
 
-import accountAdd from "./account/add.js";
-import accountDelete from "./account/delete.js";
-// Account
-import accountList from "./account/list.js";
-import accountUpdate from "./account/update.js";
-
 // Meta
 import metaHealth from "./meta/health.js";
 import metaServerInfo from "./meta/server-info.js";
@@ -81,10 +75,6 @@ export const ALL_TOOLS: ToolDefinition<any, any>[] = [
   smtpForward,
   smtpVerifyConnection,
   smtpSendRaw,
-  accountList,
-  accountAdd,
-  accountUpdate,
-  accountDelete,
   metaHealth,
   metaServerInfo,
 ];

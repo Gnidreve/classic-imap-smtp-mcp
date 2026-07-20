@@ -5,13 +5,7 @@ import type { ImapPool } from "../connections/imap-pool.js";
 import type { SmtpPool } from "../connections/smtp-pool.js";
 import type { Logger } from "../server/logging.js";
 
-export type ToolCategory =
-  | "imap-read"
-  | "imap-write"
-  | "imap-mailbox"
-  | "smtp"
-  | "account"
-  | "meta";
+export type ToolCategory = "imap-read" | "imap-write" | "imap-mailbox" | "smtp" | "meta";
 
 export interface ServerFlags {
   safe: boolean;
@@ -30,7 +24,6 @@ export interface ToolContext {
   logger: Logger;
   flags: ServerFlags;
   activeTools: string[];
-  resolveAccount(name?: string): string; // Account-Name oder Default; wirft AccountNotFoundError
 }
 
 // Infer the input type from a Zod schema

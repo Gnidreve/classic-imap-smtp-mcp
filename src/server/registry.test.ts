@@ -1,4 +1,4 @@
-// Beispiel-Unit-Test: prueft die Kaskaden-Logik der Registry (Feature-Flags, Allow ueberschreibt, Deny gewinnt, Wildcards).
+// Beispiel-Unit-Test: prüft die Kaskaden-Logik der Registry (Feature-Flags, Allow überschreibt, Deny gewinnt, Wildcards).
 import { describe, expect, it } from "vitest";
 import type { ToolDefinition } from "../tools/_types.js";
 import type { ResolvedOptions } from "./options.js";
@@ -34,7 +34,6 @@ const TOOLS: ToolDefinition[] = [
   fakeTool("imap_delete_message", "imap-write"),
   fakeTool("imap_delete_mailbox", "imap-mailbox"),
   fakeTool("smtp_send", "smtp"),
-  fakeTool("account_add", "account"),
   fakeTool("meta_server_info", "meta"),
 ];
 
@@ -45,7 +44,7 @@ const names = (o: ResolvedOptions) =>
 
 describe("resolveActiveTools cascade", () => {
   it("default: all tools active", () => {
-    expect(names(base)).toHaveLength(6);
+    expect(names(base)).toHaveLength(5);
   });
 
   it("--safe removes delete tools", () => {
@@ -61,7 +60,7 @@ describe("resolveActiveTools cascade", () => {
   });
 
   it("--deny wins over allow with wildcard", () => {
-    const r = names({ ...base, allowTools: ["account_*"], denyTools: ["account_*"] });
-    expect(r).not.toContain("account_add");
+    const r = names({ ...base, allowTools: ["imap_*"], denyTools: ["imap_*"] });
+    expect(r).not.toContain("imap_get_message");
   });
 });

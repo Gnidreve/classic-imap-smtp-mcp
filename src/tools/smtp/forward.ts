@@ -30,17 +30,14 @@ export default defineTool({
       .boolean()
       .default(false)
       .describe("Forward as attachment (RFC-822) (default: false)"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
     saveToSent: z.boolean().default(true).describe("Save copy to Sent folder (default: true)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const transport = await ctx.smtp.acquire(accountName);
-    // biome-ignore lint/style/noNonNullAssertion: resolveAccount guarantees existence
-    const accConfig = ctx.config.accounts.get(accountName)!;
+    const transport = await ctx.smtp.acquire();
+    const accConfig = ctx.config.account;
 
     // Fetch original message
-    const imapClient = await ctx.imap.acquire(accountName);
+    const imapClient = await ctx.imap.acquire();
     const mb = await imapClient.mailboxOpen(input.originalMailbox);
     if (!mb) throw new MailboxNotFoundError(input.originalMailbox);
 

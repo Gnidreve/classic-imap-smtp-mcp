@@ -11,11 +11,9 @@ export default defineTool({
     mailbox: z.string().min(1).describe("Mailbox path"),
     uid: z.number().int().positive().describe("Message UID"),
     expunge: z.boolean().default(false).describe("Also EXPUNGE after marking (default: false)"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const mb = await client.mailboxOpen(input.mailbox);
     if (!mb) throw new MailboxNotFoundError(input.mailbox);

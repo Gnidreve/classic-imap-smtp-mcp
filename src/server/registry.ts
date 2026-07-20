@@ -17,19 +17,18 @@ const READONLY_TOOLS = new Set<string>([
   "imap_get_quota",
   "imap_check_capabilities",
   "smtp_verify_connection",
-  "account_list",
   "meta_health",
   "meta_server_info",
 ]);
 
-// Tools, die --safe entfernt (Loeschen).
+// Tools, die --safe entfernt (Löschen).
 const DELETE_TOOLS = new Set<string>([
   "imap_delete_message",
   "imap_expunge",
   "imap_delete_mailbox",
 ]);
 
-// Praefix-Wildcard-Match: "imap_*" matcht "imap_search"; exakte Namen matchen exakt.
+// Präfix-Wildcard-Match: "imap_*" matcht "imap_search"; exakte Namen matchen exakt.
 function matchesAny(name: string, patterns: string[]): boolean {
   return patterns.some((p) => (p.endsWith("*") ? name.startsWith(p.slice(0, -1)) : name === p));
 }
@@ -50,12 +49,12 @@ export function resolveActiveTools(all: ToolDefinition[], o: ResolvedOptions): T
   // Stufe 1: Feature-Flags
   for (const t of all) if (passesFeatureFlags(t, o)) active.add(t.name);
 
-  // Stufe 2: Allow ueberschreibt Feature-Flags (b-Logik: kann Tools zurueckholen)
+  // Stufe 2: Allow überschreibt Feature-Flags (b-Logik: kann Tools zurückholen)
   if (o.allowTools?.length) {
     for (const t of all) if (matchesAny(t.name, o.allowTools)) active.add(t.name);
   }
 
-  // Stufe 3: Deny gewinnt ueber alles
+  // Stufe 3: Deny gewinnt über alles
   if (o.denyTools?.length) {
     for (const name of [...active]) if (matchesAny(name, o.denyTools)) active.delete(name);
   }

@@ -11,12 +11,10 @@ export default defineTool({
   category: "smtp",
   inputSchema: z.object({
     raw: z.string().min(1).describe("Raw RFC-822 message content to send"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
     saveToSent: z.boolean().default(true).describe("Save copy to Sent folder (default: true)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const transport = await ctx.smtp.acquire(accountName);
+    const transport = await ctx.smtp.acquire();
 
     const mailOptions: nodemailer.SendMailOptions = {
       raw: input.raw,
@@ -35,7 +33,7 @@ export default defineTool({
 
     if (input.saveToSent) {
       try {
-        const imapClient = await ctx.imap.acquire(accountName);
+        const imapClient = await ctx.imap.acquire();
         const sentFolder = await resolveSentFolder(imapClient);
         if (sentFolder) {
           sentMailbox = sentFolder;

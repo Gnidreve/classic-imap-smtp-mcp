@@ -1,9 +1,7 @@
-// IMAP-Connection-Pool: persistente imapflow-Connection pro Account, Reconnect mit Exp-Backoff
+// IMAP-Connection-Pool: persistente imapflow-Connection, Reconnect mit Exp-Backoff
 // (1s → 2s → 4s → 8s → 16s → 60s, max 5 Retries), 5min Idle-Timeout.
-import { ImapFlow } from "imapflow";
-import type { ImapFlowOptions } from "imapflow";
+import { ImapFlow, type ImapFlowOptions } from "imapflow";
 import type { ConfigStore } from "../config/loader.js";
-import type { AccountConfig } from "../config/schema.js";
 import { AuthError, ImapProtocolError, TlsError } from "../lib/errors.js";
 import type { Logger } from "../server/logging.js";
 
@@ -13,43 +11,39 @@ const MAX_DELAY_MS = 60000;
 const IDLE_TIMEOUT_MS = 5 * 60 * 1000;
 
 export class ImapPool {
-  private connections = new Map<string, { client: ImapFlow; lastUsed: number }>();
+  private client: ImapFlow | null = null;
+  private lastUsed = 0;
 
   constructor(
     private readonly config: ConfigStore,
     private readonly logger: Logger,
   ) {}
 
-  async acquire(account: string): Promise<ImapFlow> {
-    const existing = this.connections.get(account);
-    if (existing?.client.usable) {
-      existing.lastUsed = Date.now();
-      return existing.client;
+  async acquire(): Promise<ImapFlow> {
+    if (this.client?.usable) {
+      this.lastUsed = Date.now();
+      return this.client;
     }
 
-    if (existing) {
+    if (this.client) {
       try {
-        await existing.client.logout();
+        await this.client.logout();
       } catch {
         /* ignore */
       }
-      this.connections.delete(account);
+      this.client = null;
     }
 
-    const accConfig = this.config.accounts.get(account);
-    if (!accConfig) {
-      throw new ImapProtocolError(`Account ${account} not configured`);
-    }
-
-    const client = await this.connectWithRetry(accConfig);
-    this.connections.set(account, { client, lastUsed: Date.now() });
-    return client;
+    this.client = await this.connectWithRetry();
+    this.lastUsed = Date.now();
+    return this.client;
   }
 
-  private async connectWithRetry(acc: AccountConfig, attempt = 0): Promise<ImapFlow> {
+  private async connectWithRetry(attempt = 0): Promise<ImapFlow> {
+    const acc = this.config.account;
     try {
       const opts: ImapFlowOptions = {
-        // biome-ignore lint/style/noNonNullAssertion: config validated at load
+        // biome-ignore lint/style/noNonNullAssertion: validated at load
         host: acc.imap_host!,
         port: acc.imap_port,
         auth: {
@@ -70,7 +64,7 @@ export class ImapPool {
 
       const client = new ImapFlow(opts);
       await client.connect();
-      this.logger.info({ account: acc.name }, "IMAP connected");
+      this.logger.info("IMAP connected");
       return client;
     } catch (err) {
       const error = err as Error;
@@ -87,9 +81,9 @@ export class ImapPool {
 
       if (attempt < MAX_RETRIES) {
         const delay = Math.min(BASE_DELAY_MS * 2 ** attempt, MAX_DELAY_MS);
-        this.logger.warn({ account: acc.name, attempt: attempt + 1, delay }, "IMAP reconnect");
+        this.logger.warn({ attempt: attempt + 1, delay }, "IMAP reconnect");
         await sleep(delay);
-        return this.connectWithRetry(acc, attempt + 1);
+        return this.connectWithRetry(attempt + 1);
       }
 
       throw new ImapProtocolError(`Failed to connect to IMAP: ${error.message}`);
@@ -97,29 +91,26 @@ export class ImapPool {
   }
 
   async pruneIdle(): Promise<void> {
-    const now = Date.now();
-    for (const [account, entry] of this.connections) {
-      if (now - entry.lastUsed > IDLE_TIMEOUT_MS) {
-        this.logger.info({ account }, "Closing idle IMAP connection");
-        try {
-          await entry.client.logout();
-        } catch {
-          /* ignore */
-        }
-        this.connections.delete(account);
+    if (!this.client) return;
+    if (Date.now() - this.lastUsed > IDLE_TIMEOUT_MS) {
+      this.logger.info("Closing idle IMAP connection");
+      try {
+        await this.client.logout();
+      } catch {
+        /* ignore */
       }
+      this.client = null;
     }
   }
 
   async closeAll(): Promise<void> {
-    for (const [account, entry] of this.connections) {
-      try {
-        if (entry.client.usable) await entry.client.logout();
-      } catch (err) {
-        this.logger.warn({ account, err }, "Error closing IMAP connection");
-      }
+    if (!this.client) return;
+    try {
+      if (this.client.usable) await this.client.logout();
+    } catch (err) {
+      this.logger.warn({ err }, "Error closing IMAP connection");
     }
-    this.connections.clear();
+    this.client = null;
   }
 }
 

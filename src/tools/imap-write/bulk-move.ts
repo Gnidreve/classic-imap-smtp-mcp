@@ -11,11 +11,9 @@ export default defineTool({
     fromMailbox: z.string().min(1).describe("Source mailbox path"),
     toMailbox: z.string().min(1).describe("Target mailbox path"),
     uids: z.array(z.number().int().positive()).min(1).max(500).describe("Message UIDs to move"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const mb = await client.mailboxOpen(input.fromMailbox);
     if (!mb) throw new MailboxNotFoundError(input.fromMailbox);

@@ -6,12 +6,8 @@ export default defineTool({
   name: "meta_health",
   description: "IMAP + SMTP Erreichbarkeit, Latenz, Capabilities",
   category: "meta",
-  inputSchema: z.object({
-    account: z.string().optional().describe("Account name (default: default_account)"),
-  }),
-  handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-
+  inputSchema: z.object({}),
+  handler: async (_input, ctx) => {
     // IMAP health
     let imapOk = false;
     let imapLatencyMs: number | undefined;
@@ -20,7 +16,7 @@ export default defineTool({
 
     try {
       const imapStart = Date.now();
-      const client = await ctx.imap.acquire(accountName);
+      const client = await ctx.imap.acquire();
       const caps = [...client.capabilities.keys()];
       imapLatencyMs = Date.now() - imapStart;
       imapOk = true;
@@ -36,7 +32,7 @@ export default defineTool({
 
     try {
       const smtpStart = Date.now();
-      const transport = await ctx.smtp.acquire(accountName);
+      const transport = await ctx.smtp.acquire();
       const verify = await transport.verify();
       smtpLatencyMs = Date.now() - smtpStart;
       smtpOk = verify;
@@ -45,7 +41,6 @@ export default defineTool({
     }
 
     return {
-      account: accountName,
       imap: {
         ok: imapOk,
         ...(imapLatencyMs !== undefined ? { latencyMs: imapLatencyMs } : {}),

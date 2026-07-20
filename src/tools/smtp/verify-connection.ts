@@ -7,14 +7,10 @@ export default defineTool({
   name: "smtp_verify_connection",
   description: "SMTP-Connection-Health-Check (EHLO, AUTH)",
   category: "smtp",
-  inputSchema: z.object({
-    account: z.string().optional().describe("Account name (default: default_account)"),
-  }),
+  inputSchema: z.object({}),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const transport = await ctx.smtp.acquire(accountName);
-    // biome-ignore lint/style/noNonNullAssertion: resolveAccount guarantees existence
-    const accConfig = ctx.config.accounts.get(accountName)!;
+    const transport = await ctx.smtp.acquire();
+    const accConfig = ctx.config.account;
 
     const start = Date.now();
 

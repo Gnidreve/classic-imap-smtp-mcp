@@ -9,11 +9,9 @@ export default defineTool({
   category: "imap-write",
   inputSchema: z.object({
     mailbox: z.string().min(1).describe("Mailbox path to expunge"),
-    account: z.string().optional().describe("Account name (default: default_account)"),
   }),
   handler: async (input, ctx) => {
-    const accountName = ctx.resolveAccount(input.account);
-    const client = await ctx.imap.acquire(accountName);
+    const client = await ctx.imap.acquire();
 
     const mb = await client.mailboxOpen(input.mailbox);
     if (!mb) throw new MailboxNotFoundError(input.mailbox);
