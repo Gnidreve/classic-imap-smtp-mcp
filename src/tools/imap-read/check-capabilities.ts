@@ -7,7 +7,7 @@ export default defineTool({
   description: "Server CAPABILITY-Liste",
   category: "imap-read",
   inputSchema: z.object({}),
-  handler: async (input, ctx) => {
+  handler: async (_input, ctx) => {
     const client = await ctx.imap.acquire();
 
     const caps = [...client.capabilities.keys()];

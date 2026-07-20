@@ -7,7 +7,7 @@ export default defineTool({
   description: "Quota-Info abfragen (RFC 2087)",
   category: "imap-read",
   inputSchema: z.object({}),
-  handler: async (input, ctx) => {
+  handler: async (_input, ctx) => {
     const client = await ctx.imap.acquire();
 
     // Check if server supports QUOTA via capabilities

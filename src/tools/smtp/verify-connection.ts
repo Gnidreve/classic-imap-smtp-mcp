@@ -8,7 +8,7 @@ export default defineTool({
   description: "SMTP-Connection-Health-Check (EHLO, AUTH)",
   category: "smtp",
   inputSchema: z.object({}),
-  handler: async (input, ctx) => {
+  handler: async (_input, ctx) => {
     const transport = await ctx.smtp.acquire();
     const accConfig = ctx.config.account;
 

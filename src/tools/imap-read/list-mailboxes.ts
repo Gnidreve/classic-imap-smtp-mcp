@@ -7,7 +7,7 @@ export default defineTool({
   description: "Folder enumerieren mit Special-Use-Flags (RFC 6154)",
   category: "imap-read",
   inputSchema: z.object({}),
-  handler: async (input, ctx) => {
+  handler: async (_input, ctx) => {
     const client = await ctx.imap.acquire();
 
     const mailboxes = await client.list();

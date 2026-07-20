@@ -23,11 +23,16 @@
     "type": "git",
     "url": "git+https://github.com/Gnidreve/classic-imap-smtp-mcp.git"
   },
-  "packageManager": "pnpm@10.12.4",
+  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065",
   "bin": {
     "classic-imap-smtp-mcp": "dist/main.js"
   },
-  "files": ["dist", "README.md", "docs", "LICENSE"],
+  "files": [
+    "dist",
+    "README.md",
+    "docs",
+    "LICENSE"
+  ],
   "engines": {
     "node": ">=20"
   },
