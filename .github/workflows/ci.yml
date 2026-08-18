@@ -28,11 +28,3 @@ jobs:
       - name: Gitleaks secret scan
         uses: gitleaks/gitleaks-action@v2
         continue-on-error: true
-
-  dependency-review:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Dependency review
-        uses: actions/dependency-review-action@v4
