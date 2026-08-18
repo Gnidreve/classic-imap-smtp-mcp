@@ -78,7 +78,7 @@ Provider-Auto-Detect für 10 Provider.
 ### CI/CD (GitHub Actions)
 | Workflow | Trigger | Was |
 |---|---|---|
-| `ci.yml` | Push/PR auf main | typecheck + lint + audit (non-blocking) + test + build + Gitleaks Secret-Scan + Dependency-Review (PR) |
+| `ci.yml` | Push/PR auf main | typecheck + lint + audit (non-blocking) + test + build + Gitleaks Secret-Scan |
 | `nightly.yml` | cron 3:00 UTC + push main | Integration-Tests (Dovecot/Mailpit Docker) |
 | `codeql.yml` | Push/PR + wöchentlich | CodeQL JavaScript/TypeScript Analysis |
 | `docker.yml` | Tags v* + main + dispatch | Build & Push to Docker Hub (vaatu/classic-imap-smtp-mcp) |
