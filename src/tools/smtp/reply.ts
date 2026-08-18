@@ -2,6 +2,7 @@ import type nodemailer from "nodemailer";
 // Antwort mit korrekter In-Reply-To/References-Kette + Sent-Ablage
 import { z } from "zod";
 import { MailboxNotFoundError, SmtpRelayError, UidNotFoundError } from "../../lib/errors.js";
+import { type FromOverride, resolveFrom } from "../../lib/from-address.js";
 import { resolveSentFolder } from "../../lib/sent-folder.js";
 import { defineTool } from "../_types.js";
 
@@ -24,6 +25,13 @@ export default defineTool({
     originalMailbox: z.string().min(1).describe("Mailbox containing the original message"),
     originalUid: z.number().int().positive().describe("UID of the original message"),
     replyAll: z.boolean().default(false).describe("Reply to all recipients (default: false)"),
+    from: z
+      .union([z.string(), z.object({ address: z.string(), name: z.string().optional() })])
+      .optional()
+      .describe(
+        "Override sender address, e.g. a verified send-as alias (default: account address). " +
+          "Acceptance depends on the mail provider verifying the alias.",
+      ),
     saveToSent: z.boolean().default(true).describe("Save copy to Sent folder (default: true)"),
   }),
   handler: async (input, ctx) => {
@@ -76,7 +84,7 @@ export default defineTool({
       input.subject ?? (enc.subject?.startsWith("Re:") ? enc.subject : `Re: ${enc.subject ?? ""}`);
 
     const mailOptions: nodemailer.SendMailOptions = {
-      from: accConfig.from_name ? `"${accConfig.from_name}" <${accConfig.user}>` : accConfig.user,
+      from: resolveFrom(accConfig, input.from as FromOverride | undefined),
       to:
         typeof to === "string"
           ? to

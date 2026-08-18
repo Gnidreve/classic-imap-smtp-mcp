@@ -10,7 +10,8 @@ export type ErrorCode =
   | "CONFIG_ERROR"
   | "PERMISSION_DENIED"
   | "IMAP_PROTOCOL_ERROR"
-  | "SMTP_RELAY_ERROR";
+  | "SMTP_RELAY_ERROR"
+  | "VALIDATION_ERROR";
 
 export class McpMailError extends Error {
   constructor(
@@ -86,5 +87,10 @@ export class ImapProtocolError extends McpMailError {
 export class SmtpRelayError extends McpMailError {
   constructor(message: string, details?: Record<string, unknown>) {
     super("SMTP_RELAY_ERROR", message, details);
+  }
+}
+export class InvalidAddressError extends McpMailError {
+  constructor(value: string) {
+    super("VALIDATION_ERROR", `Invalid address/header value: ${JSON.stringify(value)}`, { value });
   }
 }

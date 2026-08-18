@@ -3,6 +3,7 @@ import type Mail from "nodemailer/lib/mailer/index.js";
 // Mail senden + optionale Sent-Ablage
 import { z } from "zod";
 import { SmtpRelayError } from "../../lib/errors.js";
+import { type FromOverride, resolveFrom } from "../../lib/from-address.js";
 import { resolveSentFolder } from "../../lib/sent-folder.js";
 import { defineTool } from "../_types.js";
 
@@ -45,6 +46,13 @@ export default defineTool({
       )
       .optional()
       .describe("Attachments"),
+    from: z
+      .union([z.string(), z.object({ address: z.string(), name: z.string().optional() })])
+      .optional()
+      .describe(
+        "Override sender address, e.g. a verified send-as alias (default: account address). " +
+          "Acceptance depends on the mail provider verifying the alias.",
+      ),
     saveToSent: z.boolean().default(true).describe("Save copy to Sent folder (default: true)"),
   }),
   handler: async (input, ctx) => {
@@ -53,7 +61,7 @@ export default defineTool({
     const accConfig = ctx.config.account;
 
     const mailOptions: nodemailer.SendMailOptions = {
-      from: accConfig.from_name ? `"${accConfig.from_name}" <${accConfig.user}>` : accConfig.user,
+      from: resolveFrom(accConfig, input.from as FromOverride | undefined),
       to: buildAddresses(input.to as string | Array<{ address: string; name?: string }>),
       cc: buildAddresses(
         input.cc as string | Array<{ address: string; name?: string }> | undefined,
@@ -84,13 +92,7 @@ export default defineTool({
         const sentFolder = await resolveSentFolder(imapClient);
         if (sentFolder) {
           sentMailbox = sentFolder;
-          const raw = await buildRfc822(
-            {
-              user: accConfig.user,
-              ...(accConfig.from_name ? { from_name: accConfig.from_name } : {}),
-            },
-            mailOptions,
-          );
+          const raw = await buildRfc822(mailOptions);
           await imapClient.append(sentFolder, raw);
           savedToSent = true;
         } else {
@@ -113,18 +115,10 @@ export default defineTool({
   },
 });
 
-async function buildRfc822(
-  acc: { user: string; from_name?: string },
-  opts: nodemailer.SendMailOptions,
-): Promise<string> {
+async function buildRfc822(opts: nodemailer.SendMailOptions): Promise<string> {
   // Build a minimal RFC-822 message for the sent copy
   const lines: string[] = [];
-  const from =
-    typeof opts.from === "string"
-      ? opts.from
-      : acc.from_name
-        ? `"${acc.from_name}" <${acc.user}>`
-        : acc.user;
+  const from = opts.from as string;
   const to =
     typeof opts.to === "string" ? opts.to : Array.isArray(opts.to) ? opts.to.join(", ") : "";
   const date = new Date().toUTCString();
