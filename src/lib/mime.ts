@@ -22,6 +22,33 @@ export interface ParsedMessage {
   attachments: AttachmentMeta[];
 }
 
+export interface ParsedEnvelope {
+  from?: string;
+  to: string[];
+}
+
+// Parst To/Cc/Bcc/From-Header eines rohen RFC-822-Strings für den SMTP-Envelope
+// (nodemailers `raw`-Option liefert die Empfänger NICHT automatisch, siehe Issue #27).
+export async function parseEnvelopeAddresses(raw: string): Promise<ParsedEnvelope> {
+  const parsed: ParsedMail = await simpleParser(raw);
+
+  const addresses: string[] = [];
+  for (const field of [parsed.to, parsed.cc, parsed.bcc]) {
+    if (!field) continue;
+    const groups = Array.isArray(field) ? field : [field];
+    for (const group of groups) {
+      for (const a of group.value) {
+        if (a.address) addresses.push(a.address);
+      }
+    }
+  }
+
+  const fromAddress = Array.isArray(parsed.from) ? parsed.from[0] : parsed.from;
+  const from = fromAddress?.value[0]?.address;
+
+  return { ...(from ? { from } : {}), to: addresses };
+}
+
 // Parst einen rohen RFC-822-String und extrahiert Text-/HTML-Body + Attachment-Metadaten.
 export async function parseMime(raw: string): Promise<ParsedMessage> {
   const parsed: ParsedMail = await simpleParser(raw);
