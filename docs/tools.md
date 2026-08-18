@@ -48,9 +48,9 @@ classic-imap-smtp-mcp registers between 15 (`--readonly`) and 32 (default) tools
 
 | Tool | What it does |
 |---|---|
-| `smtp_send` | Send with all options (to/cc/bcc, text+html, attachments, inline images, custom headers). Auto-saves copy to Sent folder (`save_to_sent`, default `true`). |
-| `smtp_reply` | Reply with correct In-Reply-To/References chain (takes original UID + folder). Sent save like `smtp_send`. |
-| `smtp_forward` | Forward with original quoted or as attachment. Sent save like `smtp_send`. |
+| `smtp_send` | Send with all options (to/cc/bcc, text+html, attachments, inline images, custom headers). Optional `from` override for verified send-as aliases. Auto-saves copy to Sent folder (`save_to_sent`, default `true`). |
+| `smtp_reply` | Reply with correct In-Reply-To/References chain (takes original UID + folder). Optional `from` override. Sent save like `smtp_send`. |
+| `smtp_forward` | Forward with original quoted or as attachment. Optional `from` override. Sent save like `smtp_send`. |
 | `smtp_verify_connection` | Connection health check |
 | `smtp_send_raw` | Send pre-formatted RFC-822. Sent save like `smtp_send`. |
 

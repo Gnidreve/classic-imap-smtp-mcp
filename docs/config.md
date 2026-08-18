@@ -25,6 +25,9 @@ classic-imap-smtp-mcp is configured **exclusively** through environment variable
 > [!TIP]
 > For Gmail, Outlook, iCloud, Fastmail, Posteo, mailbox.org, GMX, web.de, Yahoo, ProtonMail Bridge, setting only `USERNAME` + `PASSWORD` is enough — host and port are auto-detected.
 
+> [!TIP]
+> To send from a verified alias/send-as address (e.g. Gmail "Send mail as"), pass the optional `from` parameter on `smtp_send`/`smtp_reply`/`smtp_forward` instead of a static env var — whether it is accepted depends on the provider verifying the alias.
+
 ### Collision Handling
 
 If `USERNAME`, `PASSWORD`, or other bare names collide with existing environment variables, prefix all of them with `CLASSIC_`:

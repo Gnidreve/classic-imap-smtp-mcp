@@ -2,6 +2,7 @@ import type nodemailer from "nodemailer";
 // Weiterleiten (Original quoted oder als Attachment) + Sent-Ablage
 import { z } from "zod";
 import { MailboxNotFoundError, SmtpRelayError, UidNotFoundError } from "../../lib/errors.js";
+import { type FromOverride, resolveFrom } from "../../lib/from-address.js";
 import { resolveSentFolder } from "../../lib/sent-folder.js";
 import { defineTool } from "../_types.js";
 
@@ -30,6 +31,13 @@ export default defineTool({
       .boolean()
       .default(false)
       .describe("Forward as attachment (RFC-822) (default: false)"),
+    from: z
+      .union([z.string(), z.object({ address: z.string(), name: z.string().optional() })])
+      .optional()
+      .describe(
+        "Override sender address, e.g. a verified send-as alias (default: account address). " +
+          "Acceptance depends on the mail provider verifying the alias.",
+      ),
     saveToSent: z.boolean().default(true).describe("Save copy to Sent folder (default: true)"),
   }),
   handler: async (input, ctx) => {
@@ -59,7 +67,7 @@ export default defineTool({
       (enc.subject?.startsWith("Fwd:") ? enc.subject : `Fwd: ${enc.subject ?? ""}`);
 
     const mailOptions: nodemailer.SendMailOptions = {
-      from: accConfig.from_name ? `"${accConfig.from_name}" <${accConfig.user}>` : accConfig.user,
+      from: resolveFrom(accConfig, input.from as FromOverride | undefined),
       to:
         typeof input.to === "string"
           ? input.to
